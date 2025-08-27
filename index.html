@@ -102,11 +102,14 @@
             top: 0;
             left: 0;
             z-index: -1;
-            pointer-events: none; /* Allow scrolling through canvas */
+            pointer-events: auto; /* Enable particle interactions */
         }
         
-        #webglCanvas.interactive {
-            pointer-events: auto; /* Enable interactions when needed */
+        /* Ensure scrolling works on content areas */
+        main, section, .content-scrollable {
+            pointer-events: auto;
+            position: relative;
+            z-index: 1;
         }
         
 
@@ -638,7 +641,7 @@
     <canvas id="webglCanvas" class="fixed inset-0 w-full h-full z-0"></canvas>
     
     <!-- Hero Section -->
-    <section class="relative min-h-screen flex items-center justify-center overflow-hidden z-10">
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden z-10 content-scrollable">
         
         <!-- Particle Loading Screen -->
         <div id="particle-loading">
@@ -700,7 +703,7 @@
 
     </section>
 
-    <section class="py-16 lg:py-24 bg-white/95 backdrop-blur-sm overflow-hidden relative z-10">
+    <section class="py-16 lg:py-24 bg-white/95 backdrop-blur-sm overflow-hidden relative z-10 content-scrollable">
         <div class="container mx-auto px-4 lg:px-8">
             <div class="text-center mb-12">
                 <h2 class="text-lg font-medium text-grey-900 mb-2">Experience at</h2>
@@ -754,7 +757,7 @@
         </div>
     </section>
 
-    <section class="py-24 lg:py-32 bg-grey-50/90 backdrop-blur-sm relative z-10">
+    <section class="py-24 lg:py-32 bg-grey-50/90 backdrop-blur-sm relative z-10 content-scrollable">
         <div class="container mx-auto px-4 lg:px-8">
             <div class="grid lg:grid-cols-2 gap-16 items-center">
                 <!-- Left Column - Description -->
@@ -795,7 +798,7 @@
     </section>
 
     <!-- Featured Work Section -->
-    <section class="bg-black/95 backdrop-blur-sm text-white py-20 lg:py-32 rounded-3xl mx-4 lg:mx-8 relative z-10" id="work">
+    <section class="bg-black/95 backdrop-blur-sm text-white py-20 lg:py-32 rounded-3xl mx-4 lg:mx-8 relative z-10 content-scrollable" id="work">
         <div class="container mx-auto px-8 lg:px-16">
             <div class="grid lg:grid-cols-2 gap-16 items-start">
                 
@@ -1187,14 +1190,38 @@
             renderer.toneMappingExposure = 1.1;
             updateProgress(10);
 
-            // Enable canvas interactions for orbital controls
-            canvas.classList.add('interactive');
+            // Canvas is always interactive for particle controls
             
             controls = new OrbitControls(camera, renderer.domElement);
-            controls.enableDamping = true; controls.dampingFactor = 0.05;
-            controls.minDistance = 5; controls.maxDistance = 80;
-            controls.autoRotate = true; controls.autoRotateSpeed = 0.3;
-            controls.enablePan = false; // Disable panning to avoid scroll conflicts
+            controls.enableDamping = true; 
+            controls.dampingFactor = 0.05;
+            controls.minDistance = 5; 
+            controls.maxDistance = 80;
+            controls.autoRotate = true; 
+            controls.autoRotateSpeed = 0.3;
+            
+            // Enhanced control settings
+            controls.enablePan = true;
+            controls.enableZoom = true;
+            controls.enableRotate = true;
+            
+            // Optimized speeds for better responsiveness
+            controls.panSpeed = 1.0;
+            controls.rotateSpeed = 1.0;
+            controls.zoomSpeed = 1.5;
+            
+            // Mouse button assignments (default but explicit)
+            controls.mouseButtons = {
+                LEFT: THREE.MOUSE.ROTATE,
+                MIDDLE: THREE.MOUSE.DOLLY,
+                RIGHT: THREE.MOUSE.PAN
+            };
+            
+            // Touch assignments for mobile
+            controls.touches = {
+                ONE: THREE.TOUCH.ROTATE,
+                TWO: THREE.TOUCH.DOLLY_PAN
+            };
             updateProgress(5);
 
             scene.add(new THREE.AmbientLight(0x404060));
@@ -1209,15 +1236,26 @@
             setupParticleSystem(); updateProgress(25);
 
             window.addEventListener('resize', onWindowResize);
-            // Add specific canvas click for morphing (when not dragging)
-            let isDragging = false;
-            canvas.addEventListener('mousedown', () => { isDragging = false; });
-            canvas.addEventListener('mousemove', () => { isDragging = true; });
+            
+            // Use OrbitControls events to detect when not dragging for morphing
+            let isControlsActive = false;
+            
+            controls.addEventListener('start', () => {
+                isControlsActive = true;
+            });
+            
+            controls.addEventListener('end', () => {
+                isControlsActive = false;
+            });
+            
+            // Simple click detection that doesn't interfere with OrbitControls
             canvas.addEventListener('click', (e) => {
-                if (!isDragging) {
+                // Only morph if OrbitControls weren't actively being used
+                if (!isControlsActive) {
                     triggerMorph();
                 }
             });
+            
             document.getElementById('shape-btn').addEventListener('click', triggerMorph);
             document.querySelectorAll('.color-option').forEach(option => {
                 option.addEventListener('click', (e) => {
