@@ -227,14 +227,14 @@
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
         }
         
-        /* Persistent Scroll Button - Always Visible */
+        /* Floating Scroll Button - Flows with Page Content */
         #scroll-indicator {
             position: fixed;
-            bottom: 80px;
+            bottom: 30px;
             right: 30px;
             z-index: 1000;
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.4);
             border-radius: 50%;
             width: 60px;
             height: 60px;
@@ -243,17 +243,26 @@
             justify-content: center;
             cursor: pointer;
             transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             animation: bounce 2s infinite;
-            opacity: 1 !important; /* Always visible throughout page */
-            pointer-events: all !important; /* Always clickable */
+            opacity: 0.9;
+            pointer-events: all;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         }
         
         #scroll-indicator:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.6);
-            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.8);
+            transform: scale(1.15);
+            box-shadow: 0 6px 25px rgba(255, 255, 255, 0.2);
+            animation: none; /* Stop bounce on hover */
+        }
+        
+        /* Enhanced visibility for scroll button */
+        #scroll-indicator:active {
+            transform: scale(0.95);
+            background: rgba(255, 255, 255, 0.4);
         }
         
         #scroll-indicator svg {
@@ -675,12 +684,7 @@
             </div>
         </div>
         
-        <!-- Scroll Down Indicator -->
-        <div id="scroll-indicator" onclick="scrollToNext()">
-            <svg viewBox="0 0 24 24">
-                <path d="M7.41 8.58L12 13.17l4.59-4.59L18 10l-6 6-6-6 1.41-1.42z"/>
-            </svg>
-        </div>
+
         
         <!-- Content -->
         <div class="relative z-30 text-center text-white px-4 max-w-6xl mx-auto" style="text-shadow: 0 0 20px rgba(0,0,0,0.8), 0 2px 4px rgba(0,0,0,0.6);">
@@ -983,6 +987,13 @@
             setTimeout(startAnimation, 2000);
         });
     </script>
+    
+    <!-- Floating Scroll Button - Moves with Page -->
+    <div id="scroll-indicator" onclick="scrollToNext()">
+        <svg viewBox="0 0 24 24">
+            <path d="M7.41 8.58L12 13.17l4.59-4.59L18 10l-6 6-6-6 1.41-1.42z"/>
+        </svg>
+    </div>
     
     <!-- Particle System Script -->
     <script type="module">
