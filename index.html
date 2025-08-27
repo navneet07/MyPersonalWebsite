@@ -655,9 +655,6 @@
         
         <!-- Particle Controls -->
         <div id="particle-controls">
-            <div style="font-size: 10px; color: rgba(255,255,255,0.8); margin-bottom: 8px; text-align: center;">
-                🖱️ Left-Click: Rotate | Right-Click: Pan | Wheel: Zoom | Double-Click: Morph
-            </div>
             <button id="shape-btn" class="particle-button">Change Shape</button>
             <div id="color-picker">
                 <div class="color-option active" data-scheme="fire" style="background: linear-gradient(to bottom right, #ff4500, #ffcc00)"></div>
@@ -1196,59 +1193,12 @@
             // Canvas is always interactive for particle controls
             
             controls = new OrbitControls(camera, renderer.domElement);
-            console.log('OrbitControls created:', controls);
-            
-            // Basic settings
             controls.enableDamping = true; 
             controls.dampingFactor = 0.05;
             controls.minDistance = 5; 
             controls.maxDistance = 80;
             controls.autoRotate = true; 
             controls.autoRotateSpeed = 0.3;
-            
-            // Enable all controls explicitly
-            controls.enablePan = true;
-            controls.enableZoom = true;
-            controls.enableRotate = true;
-            
-            // Speed settings
-            controls.panSpeed = 2.0;  // Increased for better visibility
-            controls.rotateSpeed = 1.0;
-            controls.zoomSpeed = 1.5;
-            
-            // Ensure mouse buttons are set correctly
-            controls.mouseButtons = {
-                LEFT: THREE.MOUSE.ROTATE,
-                MIDDLE: THREE.MOUSE.DOLLY,
-                RIGHT: THREE.MOUSE.PAN
-            };
-            
-            // Touch controls for mobile
-            controls.touches = {
-                ONE: THREE.TOUCH.ROTATE,
-                TWO: THREE.TOUCH.DOLLY_PAN
-            };
-            
-            // Add debug logging
-            controls.addEventListener('start', () => {
-                console.log('OrbitControls interaction started');
-            });
-            
-            controls.addEventListener('change', () => {
-                console.log('Camera position:', camera.position);
-            });
-            
-            controls.addEventListener('end', () => {
-                console.log('OrbitControls interaction ended');
-            });
-            
-            console.log('Controls configuration:', {
-                enablePan: controls.enablePan,
-                enableZoom: controls.enableZoom, 
-                enableRotate: controls.enableRotate,
-                panSpeed: controls.panSpeed,
-                mouseButtons: controls.mouseButtons
-            });
             updateProgress(5);
 
             scene.add(new THREE.AmbientLight(0x404060));
@@ -1263,14 +1213,7 @@
             setupParticleSystem(); updateProgress(25);
 
             window.addEventListener('resize', onWindowResize);
-            
-            // Simple morph trigger - just on double click to avoid conflicts
-            canvas.addEventListener('dblclick', (e) => {
-                e.preventDefault();
-                triggerMorph();
-                console.log('Double-click detected, triggering morph');
-            });
-            
+            window.addEventListener('click', onCanvasClick);
             document.getElementById('shape-btn').addEventListener('click', triggerMorph);
             document.querySelectorAll('.color-option').forEach(option => {
                 option.addEventListener('click', (e) => {
@@ -1603,6 +1546,11 @@
         window.scrollToNext = scrollToNext;
         window.addEventListener('scroll', handleScrollElements);
         window.addEventListener('load', handleScrollElements);
+
+        function onCanvasClick(event) {
+            if (event.target.closest('#particle-controls')) { return; }
+            triggerMorph();
+        }
 
         function onWindowResize() {
             camera.aspect = window.innerWidth / window.innerHeight;
