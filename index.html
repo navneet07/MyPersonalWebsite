@@ -655,6 +655,9 @@
         
         <!-- Particle Controls -->
         <div id="particle-controls">
+            <div style="font-size: 10px; color: rgba(255,255,255,0.8); margin-bottom: 8px; text-align: center;">
+                🖱️ Left-Click: Rotate | Right-Click: Pan | Wheel: Zoom | Double-Click: Morph
+            </div>
             <button id="shape-btn" class="particle-button">Change Shape</button>
             <div id="color-picker">
                 <div class="color-option active" data-scheme="fire" style="background: linear-gradient(to bottom right, #ff4500, #ffcc00)"></div>
@@ -1193,6 +1196,9 @@
             // Canvas is always interactive for particle controls
             
             controls = new OrbitControls(camera, renderer.domElement);
+            console.log('OrbitControls created:', controls);
+            
+            // Basic settings
             controls.enableDamping = true; 
             controls.dampingFactor = 0.05;
             controls.minDistance = 5; 
@@ -1200,28 +1206,49 @@
             controls.autoRotate = true; 
             controls.autoRotateSpeed = 0.3;
             
-            // Enhanced control settings
+            // Enable all controls explicitly
             controls.enablePan = true;
             controls.enableZoom = true;
             controls.enableRotate = true;
             
-            // Optimized speeds for better responsiveness
-            controls.panSpeed = 1.0;
+            // Speed settings
+            controls.panSpeed = 2.0;  // Increased for better visibility
             controls.rotateSpeed = 1.0;
             controls.zoomSpeed = 1.5;
             
-            // Mouse button assignments (default but explicit)
+            // Ensure mouse buttons are set correctly
             controls.mouseButtons = {
                 LEFT: THREE.MOUSE.ROTATE,
                 MIDDLE: THREE.MOUSE.DOLLY,
                 RIGHT: THREE.MOUSE.PAN
             };
             
-            // Touch assignments for mobile
+            // Touch controls for mobile
             controls.touches = {
                 ONE: THREE.TOUCH.ROTATE,
                 TWO: THREE.TOUCH.DOLLY_PAN
             };
+            
+            // Add debug logging
+            controls.addEventListener('start', () => {
+                console.log('OrbitControls interaction started');
+            });
+            
+            controls.addEventListener('change', () => {
+                console.log('Camera position:', camera.position);
+            });
+            
+            controls.addEventListener('end', () => {
+                console.log('OrbitControls interaction ended');
+            });
+            
+            console.log('Controls configuration:', {
+                enablePan: controls.enablePan,
+                enableZoom: controls.enableZoom, 
+                enableRotate: controls.enableRotate,
+                panSpeed: controls.panSpeed,
+                mouseButtons: controls.mouseButtons
+            });
             updateProgress(5);
 
             scene.add(new THREE.AmbientLight(0x404060));
@@ -1237,23 +1264,11 @@
 
             window.addEventListener('resize', onWindowResize);
             
-            // Use OrbitControls events to detect when not dragging for morphing
-            let isControlsActive = false;
-            
-            controls.addEventListener('start', () => {
-                isControlsActive = true;
-            });
-            
-            controls.addEventListener('end', () => {
-                isControlsActive = false;
-            });
-            
-            // Simple click detection that doesn't interfere with OrbitControls
-            canvas.addEventListener('click', (e) => {
-                // Only morph if OrbitControls weren't actively being used
-                if (!isControlsActive) {
-                    triggerMorph();
-                }
+            // Simple morph trigger - just on double click to avoid conflicts
+            canvas.addEventListener('dblclick', (e) => {
+                e.preventDefault();
+                triggerMorph();
+                console.log('Double-click detected, triggering morph');
             });
             
             document.getElementById('shape-btn').addEventListener('click', triggerMorph);
