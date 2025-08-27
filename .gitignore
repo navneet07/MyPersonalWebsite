@@ -1,0 +1,50 @@
+# Large media files
+*.mov
+*.mp4
+*.avi
+*.mkv
+*.webm
+*.m4v
+
+# Large assets
+*.psd
+*.ai
+*.sketch
+*.fig
+
+# System files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# Build files
+dist/
+build/
+node_modules/
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Cache
+.cache/
+*.cache

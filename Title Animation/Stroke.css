@@ -1,0 +1,26 @@
+html {
+  min-height: 100vh;
+  
+}
+body {
+  background-color: #232435;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+}
+
+svg {
+  width: 70vw;
+  max-height: 250px;
+}
+
+.gsap-3-logo {
+    width: 20vw;
+    max-width: 150px;
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+}

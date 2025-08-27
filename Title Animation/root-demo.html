@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I Am Root - Animation Demo</title>
+    <style>
+        html {
+            min-height: 100vh;
+        }
+        body {
+            background-color: #232435;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        svg {
+            width: 80vw;
+            max-width: 600px;
+            height: auto;
+        }
+
+        .demo-title {
+            color: #7d7f8e;
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.8;
+        }
+
+        .restart-btn {
+            margin-top: 2rem;
+            padding: 12px 24px;
+            background: linear-gradient(45deg, #64C898, #7d7f8e);
+            border: none;
+            border-radius: 25px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .restart-btn:hover {
+            transform: scale(1.05);
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="demo-title">"i am root" - Handwritten Signature Demo</div>
+        
+        <svg viewBox="0 17.5 124.79 30.95">
+            <!-- Main path for "I AM ROOT" in capital letters -->
+            <path class="loop" d="M5 40 H35 M20 40 V120 M5 120 H35 M110 90 a20 20 0 1 1 -40 0 a20 20 0 1 1 40 0 V120 M140 120 V70 Q155 50 170 70 V120 M170 120 V70 Q185 50 200 70 V120 M230 120 V70 Q245 60 260 70 M320 90 a20 20 0 1 1 -40 0 a20 20 0 1 1 40 0 M380 90 a20 20 0 1 1 -40 0 a20 20 0 1 1 40 0 M420 40 V120 M400 70 H440" fill="none" stroke="#393b54" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+            
+            <!-- Animation boops -->
+            <path class="boop" opacity="0" d="M5 40 H35 M20 40 V120 M5 120 H35 M110 90 a20 20 0 1 1 -40 0 a20 20 0 1 1 40 0 V120 M140 120 V70 Q155 50 170 70 V120 M170 120 V70 Q185 50 200 70 V120 M230 120 V70 Q245 60 260 70 M320 90 a20 20 0 1 1 -40 0 a20 20 0 1 1 40 0 M380 90 a20 20 0 1 1 -40 0 a20 20 0 1 1 40 0 M420 40 V120 M400 70 H440" fill="none" stroke="#7d7f8e" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+            
+            <path class="boop2" opacity="0" d="M5 40 H35 M20 40 V120 M5 120 H35 M110 90 a20 20 0 1 1 -40 0 a20 20 0 1 1 40 0 V120 M140 120 V70 Q155 50 170 70 V120 M170 120 V70 Q185 50 200 70 V120 M230 120 V70 Q245 60 260 70 M320 90 a20 20 0 1 1 -40 0 a20 20 0 1 1 40 0 M380 90 a20 20 0 1 1 -40 0 a20 20 0 1 1 40 0 M420 40 V120 M400 70 H440" fill="none" stroke="#7d7f8e" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+            
+            <!-- Traveling ball -->
+            <circle class="ball" cx="5" cy="40" r="3" fill="#64C898"/>
+        </svg>
+
+        <button class="restart-btn" onclick="restartAnimation()">Restart Animation</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/MotionPathPlugin.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/DrawSVGPlugin.min.js"></script>
+    
+    <script>
+        gsap.registerPlugin(MotionPathPlugin);
+
+        // Setup - hide everything initially
+        gsap.set(".boop", {opacity: 0})
+        gsap.set(".boop2", {opacity: 0})
+        gsap.set(".ball", {
+            xPercent: -50,
+            yPercent: -50,
+            transformOrigin: "50%, 50%"
+        })
+
+        function restartAnimation() {
+            timeline.restart();
+        }
+
+        function startAnimation() {
+            timeline.play(0);
+        }
+
+        const startBall = 0.02;
+        const endBall = 0.98;
+
+        var timeline = gsap.timeline({paused: true})
+        
+        // Initial boop effect
+        timeline.to(".boop", {
+            duration: 0.5,
+            ease: "power4.out",
+            opacity: 1
+        })
+        .to(".boop", {
+            duration: 0.3,
+            ease: "back.out(8)",
+            opacity: 0.7
+        }, "+=0.1")
+        
+        // Ball travels along the "I AM ROOT" path
+        .to(".ball", {
+            duration: 12,
+            ease: "power1.inOut",
+            motionPath: {
+                path: ".loop",
+                align: ".loop",
+                start: startBall,
+                end: endBall,
+            }
+        }, 0.65)
+        
+        // End boop effect
+        .to(".boop2", {
+            duration: 0.5,
+            ease: "power4.out",
+            opacity: 1
+        }, 6)
+        .to(".boop2", {
+            duration: 0.3,
+            ease: "back.out(8)",
+            opacity: 0.7
+        }, 6.5)
+        
+        // Ball returns
+        .to(".ball", {
+            duration: 12,
+            ease: "power1.inOut",
+            motionPath: {
+                path: ".loop",
+                align: ".loop",
+                start: endBall,
+                end: startBall
+            }
+        }, 7)
+        
+        // Auto restart
+        .add(() => {
+            setTimeout(startAnimation, 1000);
+        }, 19)
+
+        // Start the animation when page loads
+        window.addEventListener('load', () => {
+            setTimeout(startAnimation, 500);
+        });
+    </script>
+
+
+</body>
+</html>

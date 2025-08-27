@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>184. Department's Highest Salary - Navneet</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Alpine.js CDN -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <!-- GSAP CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Prism.js for code syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* Custom Tailwind color extensions */
+        .bg-grey-100 { background-color: #f8fafc; }
+        .bg-grey-50 { background-color: #f8fafc; }
+        .bg-grey-900 { background-color: #111827; }
+        .bg-grey-600 { background-color: #4b5563; }
+        .text-grey-900 { color: #111827; }
+        .text-grey-600 { color: #4b5563; }
+        .text-grey-700 { color: #374151; }
+        .text-grey-500 { color: #6b7280; }
+        .text-grey-400 { color: #9ca3af; }
+        .text-grey-300 { color: #d1d5db; }
+        .border-grey-100 { border-color: #f3f4f6; }
+        .border-grey-200 { border-color: #e5e7eb; }
+        .border-grey-800 { border-color: #1f2937; }
+        
+        /* Container utility */
+        .container { max-width: 1200px; }
+        
+        /* Alpine.js collapse animation */
+        [x-cloak] { display: none !important; }
+        
+        /* Code block styling */
+        pre[class*="language-"] {
+            margin: 0;
+            border-radius: 12px;
+        }
+        
+        code[class*="language-"] {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body class="bg-white scroll-smooth" x-data="{ isMobileMenuOpen: false }">
+
+    <!-- Navigation Header -->
+    <div class="fixed top-0 w-full z-40 transition-all duration-300 bg-white/95 backdrop-blur-sm shadow-lg">
+        <div class="container mx-auto px-4 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+
+                <div class="flex items-center space-x-2">
+                    <a href="index.html" class="flex items-center space-x-3" aria-label="NG Homepage">
+                        <!-- Orange Circle Logo with NG -->
+                        <div class="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center">
+                            <span class="text-black font-bold text-sm">NG</span>
+                        </div>
+                    </a>
+                </div>
+
+                <nav class="hidden lg:flex items-center space-x-8">
+                    <a href="about-me.html" class="text-orange-500 hover:text-orange-600 transition-colors font-medium">About Me</a>
+                    <a href="index.html" class="text-orange-500 hover:text-orange-600 transition-colors font-medium">Home</a>
+                    <a href="projects.html" class="text-orange-500 hover:text-orange-600 transition-colors font-medium">Projects</a>
+                    <a href="#" class="text-grey-400 cursor-not-allowed transition-colors font-medium">Recommendations (Coming Soon)</a>
+                    <a href="#" class="text-grey-400 cursor-not-allowed transition-colors font-medium">Contact (Coming Soon)</a>
+                </nav>
+
+                <div class="hidden lg:flex items-center space-x-4">
+                    <a href="project-leetcode-tracker.html" class="px-6 py-3 bg-black text-white rounded-full font-medium hover:bg-grey-900 transition-colors">
+                        ← Back to LeetCode
+                    </a>
+                </div>
+
+                <!-- Mobile menu button -->
+                <button @click="isMobileMenuOpen = !isMobileMenuOpen"
+                        class="lg:hidden p-2 rounded-lg hover:bg-grey-100 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                              :d="isMobileMenuOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div x-show="isMobileMenuOpen" x-collapse class="lg:hidden bg-white rounded-2xl mt-4 shadow-lg border border-grey-100">
+                <div class="p-6 space-y-4">
+                    <a href="about-me.html" class="block text-orange-500 font-medium">About Me</a>
+                    <a href="index.html" class="block text-orange-500 font-medium">Home</a>
+                    <a href="projects.html" class="block text-orange-500 font-medium">Projects</a>
+                    <a href="#" class="block text-grey-400 font-medium">Recommendations (Coming Soon)</a>
+                    <a href="#" class="block text-grey-400 font-medium">Contact (Coming Soon)</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="pt-32 pb-20">
+        <div class="container mx-auto px-4 lg:px-8">
+            
+            <!-- Breadcrumb -->
+            <div class="flex items-center text-sm text-grey-500 mb-8">
+                <a href="projects.html" class="hover:text-orange-500 transition-colors">Projects</a>
+                <svg class="w-4 h-4 mx-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+                <a href="project-leetcode-tracker.html" class="hover:text-orange-500 transition-colors">LeetCode Tracker</a>
+                <svg class="w-4 h-4 mx-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+                <span>Problem 184</span>
+            </div>
+
+            <!-- Problem Header -->
+            <div class="mb-12">
+                <div class="flex items-start justify-between mb-6">
+                    <div>
+                        <h1 class="text-4xl lg:text-5xl font-bold text-grey-900 mb-4">184. Department's Highest Salary</h1>
+                        <div class="flex items-center space-x-4 mb-4">
+                            <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium">Medium</span>
+                            <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">SQL</span>
+                            <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-medium">RANK()</span>
+                            <span class="text-green-600 font-medium text-sm">✓ Solved</span>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-sm text-grey-500 mb-2">Success Rate</div>
+                        <div class="text-2xl font-bold text-green-600">Accepted</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Problem Content -->
+            <div class="grid lg:grid-cols-3 gap-12">
+                
+                <!-- Main Content -->
+                <div class="lg:col-span-2 space-y-12">
+                    
+                    <!-- Problem Statement -->
+                    <section>
+                        <h2 class="text-3xl font-bold text-grey-900 mb-6">Problem Statement</h2>
+                        <div class="bg-grey-50 rounded-2xl p-8">
+                            <p class="text-grey-700 leading-relaxed mb-6">
+                                A company's executives are interested in seeing who earns the most money in each of the company's departments.
+                            </p>
+                            <p class="text-grey-700 leading-relaxed">
+                                Write an SQL query to find employees who have the <strong>highest salary</strong> in each of the departments.
+                            </p>
+                            <p class="text-grey-700 leading-relaxed mt-4">
+                                Return the result table <strong>in any order</strong>.
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- My Solution -->
+                    <section>
+                        <h2 class="text-3xl font-bold text-grey-900 mb-6">My Solution</h2>
+                        <div class="bg-grey-900 rounded-2xl overflow-hidden">
+                            <div class="bg-grey-800 px-6 py-3 flex items-center justify-between">
+                                <span class="text-white font-medium">problem184.sql</span>
+                                <a href="https://github.com/navneet07/LeetCodeProblems/blob/feat/leetcode-185-top-department-3-salaries/184%20-%20Department's%20Highest%20Salary/problem184.sql" 
+                                   target="_blank" 
+                                   class="text-orange-400 hover:text-orange-300 text-sm flex items-center">
+                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                                    </svg>
+                                    View on GitHub
+                                </a>
+                            </div>
+                            <pre class="p-6"><code class="language-sql">SELECT 
+    d.name AS Department,
+    e.name AS Employee,
+    e.salary AS Salary
+FROM Employee e
+JOIN Department d ON e.departmentId = d.id
+WHERE (e.departmentId, e.salary) IN (
+    SELECT departmentId, MAX(salary)
+    FROM Employee
+    GROUP BY departmentId
+);</code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Solution Explanation -->
+                    <section>
+                        <h2 class="text-3xl font-bold text-grey-900 mb-6">Solution Explanation</h2>
+                        <div class="space-y-6">
+                            <div class="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-r-lg">
+                                <h3 class="text-lg font-semibold text-blue-900 mb-3">Key Insight</h3>
+                                <p class="text-blue-800">
+                                    Find the maximum salary for each department, then match employees who have that exact salary in their department.
+                                </p>
+                            </div>
+
+                            <div class="space-y-4">
+                                <h3 class="text-xl font-semibold text-grey-900">Step-by-Step Breakdown:</h3>
+                                
+                                <div class="bg-grey-50 rounded-lg p-4">
+                                    <h4 class="font-medium text-grey-900 mb-2">1. Join Tables</h4>
+                                    <p class="text-grey-600">Join Employee and Department tables to get department names.</p>
+                                </div>
+
+                                <div class="bg-grey-50 rounded-lg p-4">
+                                    <h4 class="font-medium text-grey-900 mb-2">2. Find Max Salaries</h4>
+                                    <p class="text-grey-600">Subquery groups by department and finds MAX(salary) for each department.</p>
+                                </div>
+
+                                <div class="bg-grey-50 rounded-lg p-4">
+                                    <h4 class="font-medium text-grey-900 mb-2">3. Filter Matching Employees</h4>
+                                    <p class="text-grey-600">WHERE clause matches employees whose (departmentId, salary) combination exists in the max salary results.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Example -->
+                    <section>
+                        <h2 class="text-3xl font-bold text-grey-900 mb-6">Example</h2>
+                        <div class="space-y-6">
+                            <!-- Input -->
+                            <div>
+                                <h3 class="text-lg font-semibold text-grey-900 mb-4">Input:</h3>
+                                <div class="bg-grey-50 rounded-lg p-4 overflow-x-auto">
+                                    <div class="mb-4">
+                                        <h4 class="font-medium text-grey-700 mb-2">Employee table:</h4>
+                                        <table class="w-full text-sm border-collapse">
+                                            <thead>
+                                                <tr class="bg-grey-200">
+                                                    <th class="border border-grey-300 px-3 py-2 text-left">id</th>
+                                                    <th class="border border-grey-300 px-3 py-2 text-left">name</th>
+                                                    <th class="border border-grey-300 px-3 py-2 text-left">salary</th>
+                                                    <th class="border border-grey-300 px-3 py-2 text-left">departmentId</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr><td class="border border-grey-300 px-3 py-2">1</td><td class="border border-grey-300 px-3 py-2">Joe</td><td class="border border-grey-300 px-3 py-2">70000</td><td class="border border-grey-300 px-3 py-2">1</td></tr>
+                                                <tr><td class="border border-grey-300 px-3 py-2">2</td><td class="border border-grey-300 px-3 py-2">Jim</td><td class="border border-grey-300 px-3 py-2">90000</td><td class="border border-grey-300 px-3 py-2">1</td></tr>
+                                                <tr><td class="border border-grey-300 px-3 py-2">3</td><td class="border border-grey-300 px-3 py-2">Henry</td><td class="border border-grey-300 px-3 py-2">80000</td><td class="border border-grey-300 px-3 py-2">2</td></tr>
+                                                <tr><td class="border border-grey-300 px-3 py-2">4</td><td class="border border-grey-300 px-3 py-2">Sam</td><td class="border border-grey-300 px-3 py-2">60000</td><td class="border border-grey-300 px-3 py-2">2</td></tr>
+                                                <tr><td class="border border-grey-300 px-3 py-2">5</td><td class="border border-grey-300 px-3 py-2">Max</td><td class="border border-grey-300 px-3 py-2">90000</td><td class="border border-grey-300 px-3 py-2">1</td></tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Output -->
+                            <div>
+                                <h3 class="text-lg font-semibold text-grey-900 mb-4">Output:</h3>
+                                <div class="bg-green-50 rounded-lg p-4 overflow-x-auto">
+                                    <table class="w-full text-sm border-collapse">
+                                        <thead>
+                                            <tr class="bg-green-200">
+                                                <th class="border border-green-300 px-3 py-2 text-left">Department</th>
+                                                <th class="border border-green-300 px-3 py-2 text-left">Employee</th>
+                                                <th class="border border-green-300 px-3 py-2 text-left">Salary</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr><td class="border border-green-300 px-3 py-2">IT</td><td class="border border-green-300 px-3 py-2">Jim</td><td class="border border-green-300 px-3 py-2">90000</td></tr>
+                                            <tr><td class="border border-green-300 px-3 py-2">IT</td><td class="border border-green-300 px-3 py-2">Max</td><td class="border border-green-300 px-3 py-2">90000</td></tr>
+                                            <tr><td class="border border-green-300 px-3 py-2">Sales</td><td class="border border-green-300 px-3 py-2">Henry</td><td class="border border-green-300 px-3 py-2">80000</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="lg:col-span-1">
+                    <div class="sticky top-32 space-y-6">
+                        
+                        <!-- Problem Stats -->
+                        <div class="bg-grey-50 rounded-2xl p-6">
+                            <h3 class="text-lg font-bold text-grey-900 mb-4">Problem Stats</h3>
+                            <div class="space-y-3">
+                                <div class="flex justify-between">
+                                    <span class="text-grey-600">Difficulty</span>
+                                    <span class="font-medium text-yellow-600">Medium</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-grey-600">Category</span>
+                                    <span class="font-medium">Database</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-grey-600">Topic</span>
+                                    <span class="font-medium">SQL</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-grey-600">Technique</span>
+                                    <span class="font-medium">Subquery</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-grey-600">Status</span>
+                                    <span class="font-medium text-green-600">Solved</span>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+
+                        <!-- Related Problems -->
+                        <div class="bg-grey-50 rounded-2xl p-6">
+                            <h3 class="text-lg font-bold text-grey-900 mb-4">Related Problems</h3>
+                            <div class="space-y-2">
+                                <a href="leetcode-185.html" class="block text-orange-500 hover:text-orange-600 transition-colors text-sm">
+                                    185. Department Top Three Salaries
+                                </a>
+                                <span class="block text-grey-400 text-sm cursor-not-allowed">
+                                    177. Nth Highest Salary (Coming Soon)
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Next Problem -->
+            <div class="mt-20 border-t border-grey-200 pt-12">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-grey-500 mb-2">Next Problem</p>
+                        <a href="leetcode-185.html" class="text-2xl font-bold text-grey-900 hover:text-orange-500 transition-colors">
+                            185. Department Top Three Salaries
+                        </a>
+                    </div>
+                    <a href="leetcode-185.html" class="flex items-center text-orange-500 hover:text-orange-600 transition-colors">
+                        <span class="mr-2">View Next</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- GSAP Animations -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof gsap !== 'undefined') {
+                gsap.registerPlugin(ScrollTrigger);
+
+                // Animate the main heading on load
+                gsap.from('h1', {
+                    duration: 1.2,
+                    y: 100,
+                    opacity: 0,
+                    ease: 'power2.out',
+                    delay: 0.3
+                });
+
+                // Animate content sections
+                gsap.from('section', {
+                    scrollTrigger: 'section',
+                    duration: 0.8,
+                    y: 50,
+                    opacity: 0,
+                    stagger: 0.2,
+                    ease: 'power2.out'
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>

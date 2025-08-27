@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navneet - Digital Marketing & Content Strategy</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Alpine.js CDN -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <!-- GSAP CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/MotionPathPlugin.min.js"></script>
+    
+    <!-- Swiper CSS and JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Three.js Import Map -->
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.163.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.163.0/examples/jsm/",
+          "animejs": "https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.es.js",
+          "simplex-noise": "https://cdn.skypack.dev/simplex-noise@4.0.1"
+        }
+      }
+    </script>
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* Custom Tailwind color extensions */
+        .bg-grey-100 { background-color: #f8fafc; }
+        .bg-grey-50 { background-color: #f8fafc; }
+        .bg-grey-900 { background-color: #111827; }
+        .bg-grey-600 { background-color: #4b5563; }
+        .text-grey-900 { color: #111827; }
+        .text-grey-600 { color: #4b5563; }
+        .text-grey-700 { color: #374151; }
+        .text-grey-500 { color: #6b7280; }
+        .text-grey-400 { color: #9ca3af; }
+        .text-grey-300 { color: #d1d5db; }
+        .border-grey-100 { border-color: #f3f4f6; }
+        .border-grey-800 { border-color: #1f2937; }
+        
+        /* Custom animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        .animate-float { animation: float 3s ease-in-out infinite; }
+        
+        /* Auto-scrolling carousel animation */
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-scroll { animation: scroll 20s linear infinite; }
+        
+        /* Custom scrollbar styling */
+        .scrollbar-thin {
+            scrollbar-width: thin;
+        }
+        .scrollbar-thin::-webkit-scrollbar {
+            width: 8px;
+        }
+        .scrollbar-thin::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+            background-color: #f97316;
+            border-radius: 9999px;
+            border: 2px solid transparent;
+        }
+        .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+            background-color: #ea580c;
+        }
+        
+        /* Custom z-index utilities */
+        .z-50 { z-index: 50; }
+        .z-40 { z-index: 40; }
+        .z-9999 { z-index: 9999; }
+        
+        /* Container utility */
+        .container { max-width: 1200px; }
+        
+        /* Particle System Styles */
+        #webglCanvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            pointer-events: none; /* Allow scrolling through canvas */
+        }
+        
+        #webglCanvas.interactive {
+            pointer-events: auto; /* Enable interactions when needed */
+        }
+        
+
+        
+        #particle-loading {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.6s ease-out;
+            color: white;
+            font-family: 'Courier New', monospace;
+        }
+        
+        #particle-loading span {
+            font-size: 24px;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+        }
+        
+        #progress-container {
+            width: 60%;
+            max-width: 300px;
+            height: 6px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        #progress {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #00a2ff, #00ffea);
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+        
+        #particle-controls {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            text-align: center;
+            pointer-events: all;
+            background-color: rgba(25, 30, 50, 0.4);
+            padding: 15px 25px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        
+        .particle-button {
+            background: rgba(0, 80, 180, 0.7);
+            color: white;
+            border: 1px solid rgba(0, 180, 255, 0.6);
+            border-radius: 6px;
+            padding: 8px 15px;
+            margin: 0 8px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            transition: all 0.25s ease;
+        }
+        
+        .particle-button:hover {
+            background: rgba(0, 110, 220, 0.9);
+            border-color: rgba(0, 210, 255, 0.9);
+            transform: translateY(-1px);
+            box-shadow: 0 3px 8px rgba(0, 150, 255, 0.3);
+        }
+        
+        #color-picker {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        .color-option {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: inset 0 0 4px rgba(0,0,0,0.4);
+        }
+        
+        .color-option:hover {
+            transform: scale(1.15);
+            border-color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .color-option.active {
+            transform: scale(1.18);
+            border-color: white;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+        }
+        
+        /* Scroll Down Button */
+        #scroll-indicator {
+            position: fixed;
+            bottom: 80px;
+            right: 30px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease, opacity 0.3s ease;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            animation: bounce 2s infinite;
+        }
+        
+        #scroll-indicator:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.6);
+            transform: scale(1.1);
+        }
+        
+        #scroll-indicator svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+            filter: drop-shadow(0 0 3px rgba(0,0,0,0.3));
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+        
+        /* Alpine.js collapse animation */
+        [x-cloak] { display: none !important; }
+        
+        /* Flip Button Navigation Styles */
+        .flip-button-nav {
+          --shadow-color: 0deg 0% 63%;
+          --primary: light-dark(hsl(0 0% 10%), #fff);
+          --secondary: canvas;
+          --inactive: light-dark(hsl(0 0% 60%), hsl(0 0% 50%));
+          --duration: 0.22;
+          --drop-off: 0.4;
+          --ease: linear(
+            0 0%, 0.2342 12.49%, 0.4374 24.99%,
+            0.6093 37.49%, 0.6835 43.74%,
+            0.7499 49.99%, 0.8086 56.25%,
+            0.8593 62.5%, 0.9023 68.75%, 0.9375 75%,
+            0.9648 81.25%, 0.9844 87.5%,
+            0.9961 93.75%, 1 100%
+          );
+          --border: light-dark(hsl(0 0% 80%), hsl(0 0% 60%));
+        }
+        
+        .flip-button-nav .premium:has(:checked)::before {
+          translate: -50% -250%;
+          scale: 0.85;
+        }
+        .flip-button-nav .premium:has(:checked) label span {
+          scale: 1;
+        }
+        .flip-button-nav .premium:has(:checked) .indicator {
+          background: var(--secondary);
+          clip-path: inset(0 0 0 0 round 100px);
+        }
+        .flip-button-nav .premium:has(:checked) label {
+          color: var(--inactive);
+          opacity: 0.75;
+        }
+        
+        /* Hide premium options when About Me is selected */
+        .flip-button-nav .control__track:has(#free:checked) .premium label span {
+          scale: 0;
+          opacity: 0;
+          pointer-events: none;
+        }
+        .flip-button-nav .premium:has(:nth-of-type(1):checked) label:nth-of-type(1),
+        .flip-button-nav .premium:has(:nth-of-type(2):checked) label:nth-of-type(2) {
+          color: var(--primary);
+          opacity: 1;
+        }
+        .flip-button-nav .premium:has(:nth-of-type(1):checked) .indicator {
+          translate: -100% 0;
+        }
+        .flip-button-nav .premium:has(:nth-of-type(2):checked) .indicator {
+          translate: 0 0;
+        }
+
+        .flip-button-nav .control label {
+          transition-property: color, opacity;
+          transition-duration: calc(var(--duration) * 1s);
+          transition-timing-function: var(--ease);
+        }
+
+        .flip-button-nav .control__track:not(:has(> :checked)) > label {
+          color: var(--primary);
+          opacity: var(--drop-off);
+        }
+        .flip-button-nav .control__track:not(:has(> :checked)) > .indicator {
+          translate: 100% 0;
+        }
+        .flip-button-nav .indicator {
+          transition: translate calc(var(--duration) * 1s) var(--ease);
+        }
+        .flip-button-nav .premium .indicator {
+          transition-property: translate, clip-path, background;
+          transition-duration: calc(var(--duration) * 1s);
+          transition-timing-function: var(--ease);
+          clip-path: inset(
+            73cqh calc(50% + 1px) calc(27cqh - 2px) calc(50% - 3px) round 100px
+          );
+        }
+        .flip-button-nav .premium::before {
+          transition-property: scale, translate;
+          transition-duration: calc(var(--duration) * 1s);
+          transition-timing-function: var(--ease);
+        }
+        .flip-button-nav .control__track:has(> :checked) .premium .indicator {
+          background: var(--inactive);
+        }
+        .flip-button-nav .control__track:has(> :checked) .premium label {
+          color: var(--inactive);
+        }
+
+        .flip-button-nav .indicator {
+          position: absolute;
+          width: 50%;
+          left: 0;
+          top: 0;
+          bottom: 0;
+          background: #f97316; /* Orange to match your brand */
+          border-radius: 100px;
+        }
+
+        .flip-button-nav .premium .indicator {
+          background: #f97316;
+          left: 50%;
+          top: 0;
+          translate: -50% 0;
+        }
+
+        .flip-button-nav .control {
+          scale: 1;
+          letter-spacing: 0.5px;
+          position: relative;
+          width: 280px;
+          height: 42px;
+          aspect-ratio: 300 / 42;
+          background: white;
+          border-radius: 100px;
+          border: 1px solid #e5e7eb;
+          padding: 3px;
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .flip-button-nav .control__track {
+          display: grid;
+          place-items: center;
+          grid-template-columns: repeat(4, 1fr);
+          width: 100%;
+          height: 100%;
+          position: relative;
+        }
+
+        .flip-button-nav .premium::before {
+          content: 'My Work';
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          translate: -50% -80%;
+          color: #1f2937;
+          font-size: 0.75rem;
+          z-index: 2;
+          font-weight: 500;
+        }
+
+        .flip-button-nav label {
+          display: inline-block;
+          height: 100%;
+          width: 100%;
+          display: grid;
+          place-items: center;
+          cursor: pointer;
+          font-size: 0.875rem;
+          color: #1f2937;
+          z-index: 2;
+          font-weight: 500;
+        }
+
+        .flip-button-nav .control__track > label {
+          color: white;
+        }
+
+        .flip-button-nav .premium {
+          width: 100%;
+          height: 100%;
+          display: grid;
+          position: relative;
+          grid-template-columns: 1fr 1fr;
+          border: 1px solid #0000;
+          container-type: size;
+        }
+
+        .flip-button-nav .premium,
+        .flip-button-nav .control__track > label:nth-of-type(1) {
+          grid-column: span 2;
+        }
+
+        .flip-button-nav label span {
+          display: grid;
+          place-items: center;
+          height: 100%;
+          width: 100%;
+          transition: scale calc(var(--duration) * 1s) var(--ease);
+        }
+
+        .flip-button-nav .premium label:nth-of-type(1) span {
+          scale: 0;
+          opacity: 0;
+          transform-origin: 150% 150%;
+          border-radius: 100px;
+          transition: scale calc(var(--duration) * 1s) var(--ease), opacity calc(var(--duration) * 1s) var(--ease);
+        }
+        .flip-button-nav .premium label:nth-of-type(2) span {
+          scale: 0;
+          opacity: 0;
+          transform-origin: -65% 150%;
+          border-radius: 100px;
+          transition: scale calc(var(--duration) * 1s) var(--ease), opacity calc(var(--duration) * 1s) var(--ease);
+        }
+        
+        /* Show options when My Work is active (About Me is NOT checked) */
+        .flip-button-nav .control__track:not(:has(#free:checked)) .premium label:nth-of-type(1) span,
+        .flip-button-nav .control__track:not(:has(#free:checked)) .premium label:nth-of-type(2) span {
+          scale: 0.75;
+          opacity: 1;
+        }
+
+        .flip-button-nav .sr-only {
+          position: absolute;
+          width: 1px;
+          height: 1px;
+          padding: 0;
+          margin: -1px;
+          overflow: hidden;
+          clip: rect(0, 0, 0, 0);
+          white-space: nowrap;
+          border-width: 0;
+        }
+    </style>
+</head>
+<body class="bg-grey-100 scroll-smooth" data-barba="wrapper" x-data="" x-init="
+        window.addEventListener('beforeunload', function () {
+            document.body.classList.add('js-pre-loader');
+        });
+    ">
+
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TLWWSRBF"
+                      height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <div class="fixed inset-0 bg-indigo-950 transition-transform duration-1000 scale-0 z-50 js-reveal-ellipse"
+         style="border-radius: 50%; transform-origin: center center;"></div>
+
+    <div class="js-leave-mask fixed inset-0 bg-indigo-950 z-50 scale-0 duration-1000 pointer-events-none"
+         style="border-radius: 50%; transform-origin: center center;"></div>
+
+
+
+    <div class="fixed top-0 w-full z-50 transition-all duration-300"
+         x-data="{ 
+        isMobileMenuOpen: false,
+        isMegaMenuOpen: false,
+        currentMegaMenu: null,
+        isScrolled: false
+    }"
+         x-init="
+        window.addEventListener('scroll', () => {
+            isScrolled = window.scrollY > 50;
+        });
+    "
+         :class="{ 
+        'bg-white/95 backdrop-blur-sm shadow-lg': isScrolled,
+        'bg-transparent': !isScrolled
+    }">
+
+        <div class="container mx-auto px-4 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+
+                <div class="flex items-center space-x-2">
+                    <a href="/" class="flex items-center space-x-3" aria-label="NG Homepage">
+                        <!-- Orange Circle Logo with NG -->
+                        <div class="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center">
+                            <span class="text-black font-bold text-sm">NG</span>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Flip Button Navigation -->
+                <div class="hidden lg:flex items-center">
+                    <div class="flip-button-nav">
+                        <div class="control" x-data="{ 
+                            currentSelection: 'about',
+                            navigate(selection) {
+                                this.currentSelection = selection;
+                                switch(selection) {
+                                    case 'about':
+                                        window.location.href = 'about-me.html';
+                                        break;
+                                    case 'projects': 
+                                        window.location.href = 'projects.html';
+                                        break;
+                                    case 'contact':
+                                        // Contact functionality - could open modal or go to contact page
+                                        alert('Contact functionality coming soon!');
+                                        break;
+                                }
+                            }
+                        }">
+                            <div class="control__track">
+                                <div class="indicator"></div>
+                                <label for="free" @click="navigate('about')">About Me</label>
+                                <input class="sr-only" type="radio" name="tier" id="free" checked />
+                                <div class="premium">
+                                    <div class="indicator"></div>
+                                    <label for="solo" @click="navigate('projects')">
+                                        <span>Projects</span><span class="sr-only">My Work Projects</span>
+                                    </label>
+                                    <input class="sr-only" type="radio" name="tier" id="solo" />
+                                    <label for="team" @click="navigate('contact')">
+                                        <span>Contact Me</span><span class="sr-only">My Work Contact Me</span>
+                                    </label>
+                                    <input class="sr-only" type="radio" name="tier" id="team" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hidden lg:flex items-center space-x-4">
+                    <a href="#"
+                       class="px-6 py-3 bg-grey-400 text-white rounded-full font-medium cursor-not-allowed">
+                        Contact (Coming Soon)
+                    </a>
+                </div>
+
+                <button @click="isMobileMenuOpen = !isMobileMenuOpen"
+                        class="lg:hidden flex flex-col justify-center items-center w-8 h-8 space-y-1">
+                    <span class="w-6 h-0.5 bg-grey-600 transition-transform duration-300"
+                          :class="{ 'rotate-45 translate-y-2': isMobileMenuOpen }"></span>
+                    <span class="w-6 h-0.5 bg-grey-600 transition-opacity duration-300"
+                          :class="{ 'opacity-0': isMobileMenuOpen }"></span>
+                    <span class="w-6 h-0.5 bg-grey-600 transition-transform duration-300"
+                          :class="{ '-rotate-45 -translate-y-2': isMobileMenuOpen }"></span>
+                </button>
+            </div>
+
+            <!-- Mobile Flip Button Navigation -->
+            <div x-show="isMobileMenuOpen" x-collapse class="lg:hidden bg-white rounded-2xl mt-4 shadow-lg border border-grey-100">
+                <div class="px-6 py-6">
+                    <div class="flip-button-nav">
+                        <div class="control" x-data="{ 
+                            currentSelection: 'about',
+                            navigate(selection) {
+                                this.currentSelection = selection;
+                                // Close mobile menu first
+                                isMobileMenuOpen = false;
+                                
+                                switch(selection) {
+                                    case 'about':
+                                        window.location.href = 'about-me.html';
+                                        break;
+                                    case 'projects': 
+                                        window.location.href = 'projects.html';
+                                        break;
+                                    case 'contact':
+                                        alert('Contact functionality coming soon!');
+                                        break;
+                                }
+                            }
+                        }" style="scale: 0.9;">
+                            <div class="control__track">
+                                <div class="indicator"></div>
+                                <label for="free-mobile" @click="navigate('about')">About Me</label>
+                                <input class="sr-only" type="radio" name="tier-mobile" id="free-mobile" checked />
+                                <div class="premium">
+                                    <div class="indicator"></div>
+                                    <label for="solo-mobile" @click="navigate('projects')">
+                                        <span>Projects</span><span class="sr-only">My Work Projects</span>
+                                    </label>
+                                    <input class="sr-only" type="radio" name="tier-mobile" id="solo-mobile" />
+                                    <label for="team-mobile" @click="navigate('contact')">
+                                        <span>Contact Me</span><span class="sr-only">My Work Contact Me</span>
+                                    </label>
+                                    <input class="sr-only" type="radio" name="tier-mobile" id="team-mobile" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Global WebGL Particle Background -->
+    <canvas id="webglCanvas" class="fixed inset-0 w-full h-full z-0"></canvas>
+    
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden z-10">
+        
+        <!-- Particle Loading Screen -->
+        <div id="particle-loading">
+            <span>Initializing Particles...</span>
+            <div id="progress-container">
+                <div id="progress"></div>
+            </div>
+        </div>
+        
+
+        
+        <!-- Particle Controls -->
+        <div id="particle-controls">
+            <button id="shape-btn" class="particle-button">Change Shape</button>
+            <div id="color-picker">
+                <div class="color-option active" data-scheme="fire" style="background: linear-gradient(to bottom right, #ff4500, #ffcc00)"></div>
+                <div class="color-option" data-scheme="neon" style="background: linear-gradient(to bottom right, #ff00ff, #00ffff)"></div>
+                <div class="color-option" data-scheme="nature" style="background: linear-gradient(to bottom right, #00ff00, #66ffcc)"></div>
+                <div class="color-option" data-scheme="rainbow" style="background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet)"></div>
+            </div>
+        </div>
+        
+        <!-- Scroll Down Indicator -->
+        <div id="scroll-indicator" onclick="scrollToNext()">
+            <svg viewBox="0 0 24 24">
+                <path d="M7.41 8.58L12 13.17l4.59-4.59L18 10l-6 6-6-6 1.41-1.42z"/>
+            </svg>
+        </div>
+        
+        <!-- Content -->
+        <div class="relative z-30 text-center text-white px-4 max-w-6xl mx-auto" style="text-shadow: 0 0 20px rgba(0,0,0,0.8), 0 2px 4px rgba(0,0,0,0.6);">
+            
+
+            
+            <!-- Animated Main Heading -->
+            <div class="mb-12 flex justify-center">
+                <div id="animated-title-container" class="w-full max-w-2xl">
+                    <!-- SVG will be inserted here -->
+                </div>
+            </div>
+            
+            <!-- Platform Icons -->
+            <div class="flex justify-center items-center space-x-12 text-lg">
+                <span class="flex items-center space-x-3">
+                    <img src="images/github-logo.png" 
+                         alt="GitHub" 
+                         class="w-6 h-6 filter invert">
+                    <span>GitHub</span>
+                </span>
+                <span class="flex items-center space-x-3">
+                    <img src="https://content.linkedin.com/content/dam/me/business/en-us/amp/brand-site/v2/bg/LI-Bug.svg.original.svg" 
+                         alt="LinkedIn" 
+                         class="w-6 h-6">
+                    <span>LinkedIn</span>
+                </span>
+            </div>
+        </div>
+        
+
+    </section>
+
+    <section class="py-16 lg:py-24 bg-white/95 backdrop-blur-sm overflow-hidden relative z-10">
+        <div class="container mx-auto px-4 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-lg font-medium text-grey-900 mb-2">Experience at</h2>
+                <h3 class="text-2xl font-bold text-grey-900">Leading Companies</h3>
+            </div>
+            
+            <!-- Auto-scrolling carousel -->
+            <div class="relative">
+                <div class="flex animate-scroll space-x-16 items-center">
+                    <!-- First set of companies -->
+                    <div class="flex items-center justify-center min-w-fit">
+                        <span class="text-3xl font-bold text-blue-600">Walmart</span>
+                    </div>
+                    <div class="flex items-center justify-center min-w-fit">
+                        <span class="text-3xl font-bold text-blue-500">Microsoft</span>
+                    </div>
+                    <div class="flex items-center justify-center min-w-fit">
+                        <span class="text-3xl font-bold text-orange-600">SonicWall</span>
+                    </div>
+                    <div class="flex items-center justify-center min-w-fit">
+                        <span class="text-3xl font-bold text-red-600">AsiaSociety</span>
+                    </div>
+                    <div class="flex items-center justify-center min-w-fit">
+                        <span class="text-3xl font-bold text-green-600">BloomEnergy</span>
+                    </div>
+                    <div class="flex items-center justify-center min-w-fit">
+                        <span class="text-3xl font-bold text-purple-600">Alarm.com</span>
+                    </div>
+                    
+                    <!-- Duplicate set for seamless loop -->
+                    <div class="flex items-center justify-center min-w-fit">
+                        <span class="text-3xl font-bold text-blue-600">Walmart</span>
+                    </div>
+                    <div class="flex items-center justify-center min-w-fit">
+                        <span class="text-3xl font-bold text-blue-500">Microsoft</span>
+                    </div>
+                    <div class="flex items-center justify-center min-w-fit">
+                        <span class="text-3xl font-bold text-orange-600">SonicWall</span>
+                    </div>
+                    <div class="flex items-center justify-center min-w-fit">
+                        <span class="text-3xl font-bold text-red-600">AsiaSociety</span>
+                    </div>
+                    <div class="flex items-center justify-center min-w-fit">
+                        <span class="text-3xl font-bold text-green-600">BloomEnergy</span>
+                    </div>
+                    <div class="flex items-center justify-center min-w-fit">
+                        <span class="text-3xl font-bold text-purple-600">Alarm.com</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 lg:py-32 bg-grey-50/90 backdrop-blur-sm relative z-10">
+        <div class="container mx-auto px-4 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <!-- Left Column - Description -->
+                <div class="space-y-6">
+                    <p class="text-lg text-grey-600 leading-relaxed">
+                        Self-taught and highly motivated professional with hands-on experience in Python, SQL, React.js, Tableau, and Power BI. Skilled in building interactive dashboards and full-stack applications, with practical knowledge of GCP and Azure Cloud Services. Backed by AI certifications and a deep understanding of emerging technologies, I combine problem-solving ability with a strong drive to learn. Seeking a developer role where I can apply my skills, contribute to innovative projects, and continue growing as a "vibe coder" in a fast-paced environment.
+                    </p>
+                </div>
+                
+                <!-- Right Column - Main Heading -->
+                <div class="space-y-8">
+                    <h2 class="text-6xl lg:text-7xl font-bold text-grey-900 leading-tight">
+                        Evolving <span class="text-black">Through</span><br>
+                        <span class="inline-block relative">
+                            Innovation
+                        </span>
+                    </h2>
+                    
+                    <div class="flex space-x-6 pt-4">
+                        <a href="about-me.html"
+                           class="inline-flex items-center text-grey-700 font-medium hover:text-black transition-colors">
+                            My Story
+                            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                            </svg>
+                        </a>
+                        <a href="#"
+                           class="inline-flex items-center text-grey-400 font-medium cursor-not-allowed">
+                            My Services (Coming Soon)
+                            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Work Section -->
+    <section class="bg-black/95 backdrop-blur-sm text-white py-20 lg:py-32 rounded-3xl mx-4 lg:mx-8 relative z-10" id="work">
+        <div class="container mx-auto px-8 lg:px-16">
+            <div class="grid lg:grid-cols-2 gap-16 items-start">
+                
+                <!-- Left Column - Project List with Scroll -->
+                <div class="space-y-2">
+                    <h2 class="text-white text-2xl font-medium mb-12">Featured Work</h2>
+                    
+                    <!-- Scrollable container -->
+                    <div class="max-h-96 overflow-y-auto space-y-8 pr-4 scrollbar-thin scrollbar-thumb-orange-500 scrollbar-track-transparent">
+                        <div class="space-y-1">
+                            <h3 class="text-5xl lg:text-6xl font-bold">LeetCode Solutions</h3>
+                            <p class="text-grey-400 text-sm">[2023-2025]</p>
+                        </div>
+                        
+                        <div class="space-y-1">
+                            <h3 class="text-5xl lg:text-6xl font-bold">Github Repos</h3>
+                            <p class="text-grey-400 text-sm">[2024-2025]</p>
+                        </div>
+                        
+                        <div class="space-y-1">
+                            <h3 class="text-5xl lg:text-6xl font-bold">Published Projects</h3>
+                            <p class="text-grey-400 text-sm">[2024]</p>
+                        </div>
+                        
+                        <div class="space-y-1">
+                            <h3 class="text-5xl lg:text-6xl font-bold">Self Taught</h3>
+                            <p class="text-grey-400 text-sm">[2022-2024]</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right Column - Coding/Tech Images -->
+                <div class="space-y-4 max-h-96 overflow-y-auto scrollbar-thin scrollbar-thumb-orange-500 scrollbar-track-transparent">
+                    <!-- LeetCode/Coding Challenge -->
+                    <div class="rounded-2xl overflow-hidden relative group">
+                        <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500&q=80" 
+                             alt="Code on laptop screen" 
+                             class="w-full h-64 object-cover">
+                        <div class="absolute top-4 right-4 bg-white bg-opacity-20 px-3 py-1 rounded-full text-white text-sm font-medium">
+                            💻 LeetCode
+                        </div>
+                    </div>
+                    
+                    <!-- GitHub Projects -->
+                    <div class="rounded-2xl overflow-hidden relative group">
+                        <img src="https://images.unsplash.com/photo-1618477247222-acbdb0e159b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500&q=80" 
+                             alt="GitHub interface and code" 
+                             class="w-full h-64 object-cover">
+                        <div class="absolute top-4 right-4 bg-white bg-opacity-20 px-3 py-1 rounded-full text-white text-sm font-medium">
+                            🐙 GitHub
+                        </div>
+                    </div>
+                    
+                    <!-- Published Projects -->
+                    <div class="rounded-2xl overflow-hidden relative group">
+                        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500&q=80" 
+                             alt="Data visualization and analytics" 
+                             class="w-full h-64 object-cover">
+                        <div class="absolute top-4 right-4 bg-white bg-opacity-20 px-3 py-1 rounded-full text-white text-sm font-medium">
+                            📊 Projects
+                        </div>
+                    </div>
+                    
+                    <!-- Self-Taught Learning -->
+                    <div class="rounded-2xl overflow-hidden relative group bg-gradient-to-br from-blue-400 to-purple-600">
+                        <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500&q=80" 
+                             alt="Learning and studying code" 
+                             class="w-full h-64 object-cover mix-blend-multiply">
+                        <div class="absolute top-4 right-4 bg-white bg-opacity-20 px-3 py-1 rounded-full text-white text-sm font-medium">
+                            🎓 Self-Taught
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Handwritten Title Animation Script -->
+    <script>
+        gsap.registerPlugin(MotionPathPlugin);
+        
+        // Insert the SVG into the container
+        document.getElementById('animated-title-container').innerHTML = `
+            <svg viewBox="0 17.5 124.79 30.95" class="w-full h-auto">
+                <!-- Beautiful handwritten "i am root" -->
+                <path class="loop" d="M5.85 46.85Q4.30 46.85 3.20 45.98Q2.10 45.10 1.40 43.70Q0.70 42.30 0.35 40.77Q0 39.25 0 38Q0 37.80 0.05 37.48Q0.10 37.15 0.35 37.15Q0.45 37.15 0.45 37.30Q0.45 37.70 0.55 38.17Q0.65 38.65 0.75 39.10Q1 40.25 1.57 41.40Q2.15 42.55 3.10 43.30Q4.05 44.05 5.40 44.05Q6.60 44.05 7.55 43.55Q8.50 43.05 9.25 42.15Q10.85 40.20 12.08 37.38Q13.30 34.55 14.30 31.55Q15.30 28.55 16.05 26.15Q16.10 26 16.30 25.38Q16.50 24.75 16.70 24.13Q16.90 23.50 16.90 23.40Q16.95 22.50 17 21.67Q17.05 20.85 17.75 20.20Q15.95 20.80 14.13 21.38Q12.30 21.95 10.55 22.65Q9.45 23.10 8.60 23.90Q7.75 24.70 7.75 26Q7.75 27 8.23 27.95Q8.70 28.90 9.15 29.80Q9.60 30.70 9.60 31.70Q9.60 32.70 8.88 33.55Q8.15 34.40 7.10 34.40Q6.90 34.40 6.50 34.30Q6.10 34.20 6.10 34Q6.10 33.85 6.25 33.85Q6.30 33.85 6.40 33.92Q6.50 34 6.65 34Q7.25 34 7.63 33.42Q8.00 32.85 8.20 32.15Q8.40 31.45 8.40 31Q8.40 29.85 7.88 28.82Q7.35 27.80 6.83 26.80Q6.30 25.80 6.30 24.75Q6.30 23.40 7.30 22.60Q8.30 21.80 9.90 21.32Q11.50 20.85 13.25 20.55Q15.00 20.25 16.58 19.92Q18.15 19.60 19.05 19.05Q19.40 18.85 20.00 18.17Q20.60 17.50 20.80 17.50Q20.95 17.50 20.95 17.80Q20.95 18.20 20.70 18.88Q20.45 19.55 20.15 19.85Q19.55 20.50 19.20 21.25Q18.85 22 18.50 22.85Q18 24.10 17.55 25.40Q17.10 26.70 16.65 28Q15.50 31.15 14.43 34.33Q13.35 37.50 12.00 40.60Q11.50 41.80 10.63 43.25Q9.75 44.70 8.55 45.77Q7.35 46.85 5.85 46.85ZM36.35 45.45Q34.95 45.45 34.95 43.30Q34.95 41.95 35.35 40.73Q35.75 39.50 36.10 38.25Q35.30 39.10 34.58 39.90Q33.85 40.70 33.00 41.50Q32.20 42.25 31.35 42.98Q30.50 43.70 29.65 44.25Q28.10 45.25 27.30 45.25Q26.50 45.25 26.50 44.30Q26.50 43.20 27.35 41.35Q27.85 40.25 28.73 38.95Q29.60 37.65 30.55 36.40Q31.45 35.30 32.68 34.15Q33.90 33 35.35 32.20Q36.80 31.40 38.25 31.40Q39.40 31.40 40.18 31.92Q40.95 32.45 40.95 33.60Q40.95 34.80 40.50 35.05Q40.35 35.20 40.30 35.15Q40.25 35.10 40.25 35.10Q40.20 34.60 39.80 34.08Q39.40 33.55 38.80 33.35Q38.15 33.15 37.35 33.15Q35.50 33.15 33.88 34.23Q32.25 35.30 31.10 36.75Q30.15 38 29.58 39.33Q29.00 40.65 29.00 41.65Q29.00 43.15 29.80 43.15Q30.30 43.15 30.90 42.70Q31.50 42.25 31.90 41.90Q33.35 40.60 34.63 39.02Q35.90 37.45 36.40 36.80Q36.50 36.70 36.98 36.48Q37.45 36.25 38.00 36.10L39.05 35.85Q39.35 35.85 39.35 35.90Q39.05 36.30 38.53 37.55Q38.00 38.80 37.60 40.23Q37.20 41.65 37.20 42.65Q37.20 43.45 37.50 43.70Q37.65 43.85 37.90 43.85Q38.30 43.85 38.75 43.58Q39.20 43.30 39.70 42.95Q41.45 41.65 43.03 39.75Q44.60 37.85 45.70 36.35Q45.70 36.35 45.80 36.45Q45.90 36.70 45.80 36.85Q45.15 37.70 44.45 38.63Q43.75 39.55 43.05 40.45Q42.30 41.30 41.53 42.13Q40.75 42.95 39.90 43.65Q38.90 44.45 37.98 44.95Q37.05 45.45 36.35 45.45ZM58.15 48.45Q56.20 48.45 56.20 45.75Q56.20 44.85 56.40 43.63Q56.60 42.40 57.05 40.80Q57.20 40.15 57.68 38.77Q58.15 37.40 58.50 36.45Q57.45 37.25 56.10 38.48Q54.75 39.70 53.58 40.90Q52.40 42.10 51.80 42.80Q51.40 43.35 51.40 43.15L50.85 43.55Q50.50 43.75 50.23 43.75Q49.95 43.75 49.95 43.50Q49.95 43.10 50.13 42.20Q50.30 41.30 50.55 40.15Q50.80 39 51.13 37.98Q51.45 36.95 51.75 36.35Q49.55 38.10 47.83 39.95Q46.10 41.80 45.40 44.20Q45.35 44.40 45.03 44.52Q44.70 44.65 44.30 44.75Q43.95 44.80 43.55 44.92Q43.15 45.05 42.80 45.20Q42.80 45.10 42.90 44.90Q43.00 44.70 43.05 44.60Q43.20 44.30 43.38 43.77Q43.55 43.25 43.90 42.60Q44.35 41.75 44.78 40.70Q45.20 39.65 45.50 38.88Q45.80 38.10 45.80 38.10L46.40 36.75Q46.50 36.40 46.63 36.10Q46.75 35.80 46.80 35.50Q46.85 35.30 46.85 35Q46.85 34.50 46.63 34.20Q46.40 33.90 45.70 33.90Q45.15 33.90 44.53 34.15Q43.90 34.40 43.35 34.65Q43.40 34.55 43.48 34.35Q43.55 34.15 43.60 34.10Q43.85 34 44.88 33.60Q45.90 33.20 46.80 32.85Q47.20 32.70 47.63 32.48Q48.05 32.25 48.40 32.05Q48.50 31.95 48.85 31.75Q49.20 31.55 49.30 31.55L49.40 31.55Q49.85 31.55 49.85 32.25Q49.75 33 49.30 34.20Q48.90 35.30 48.38 36.35Q47.85 37.40 47.75 37.65L46.35 40.85Q48.45 38.70 50.25 36.73Q52.05 34.75 53.65 32.85Q54.60 31.70 56.00 31.70Q56.25 31.70 56.58 31.73Q56.90 31.75 57.10 31.85Q57.35 31.95 57.23 32.08Q57.10 32.20 56.95 32.25Q56.15 32.45 55.30 33.60Q54.45 34.75 53.73 36.33Q53.00 37.90 52.55 39.42Q52.10 40.95 52.00 41.85Q52.00 41.90 51.98 41.98Q51.95 42.05 51.95 42.15Q52.75 41.15 53.55 40.27Q54.35 39.40 55.15 38.55Q56.05 37.60 57 36.73Q57.95 35.85 58.90 34.90Q59.15 34.60 59.48 34.48Q59.80 34.35 60.15 34.30Q60.60 34.20 61.00 34.13Q61.40 34.05 61.75 33.85Q62.10 33.60 62.23 33.65Q62.35 33.70 62.35 33.75L62.35 33.85Q62.35 34.15 61.95 34.50Q61.35 35.05 60.70 36.23Q60.05 37.40 59.53 38.77Q59 40.15 58.65 41.30Q58 43.55 58 45.05Q58 47.10 59.40 47.10Q60.15 47.10 61.03 46.25Q61.90 45.40 62.40 44.90Q62.45 44.90 62.48 44.92Q62.50 44.95 62.45 44.95Q62.30 45.60 60.85 47Q60.15 47.70 59.35 48.08Q58.55 48.45 58.15 48.45ZM79.05 45.10Q78.25 45 77.90 44.45Q77.55 43.90 77.55 43.15Q77.55 42.10 77.98 40.83Q78.40 39.55 78.93 38.45Q79.45 37.35 79.75 36.80L80.60 35.40Q79.95 35.65 79.45 35.65Q78.25 35.65 77.70 34.45Q77.50 34.70 77.25 35.10Q77.00 35.50 76.90 35.70Q76.15 36.75 75.10 38.13Q74.05 39.50 73.00 40.73Q71.95 41.95 71.10 42.65L71.05 42.65Q71.00 42.65 70.95 42.50Q70.90 42.35 71.00 42.25Q71.70 41.55 72.40 40.73Q73.10 39.90 73.70 39.10Q74.25 38.40 74.95 37.40Q75.65 36.40 76.25 35.38Q76.85 34.35 77.10 33.60Q77.05 33.20 77.15 32.33Q77.25 31.45 78.00 30Q78.30 29.35 79.05 29.35Q79.55 29.35 80.03 29.63Q80.50 29.90 80.65 30.30Q79.75 31.05 79.10 31.90Q78.85 32.25 78.55 32.83Q78.25 33.40 78.25 33.95Q78.25 34.30 78.45 34.58Q78.65 34.85 79.25 34.85Q80.05 34.85 80.88 34.45Q81.70 34.05 82.40 33.80Q82.75 33.70 83.05 33.60Q83.35 33.50 83.60 33.50Q84.30 33.50 84.25 34.25Q83.15 35.35 82.25 36.67Q81.35 38 80.65 39.45Q80.50 39.80 80.20 40.52Q79.90 41.25 79.68 42.02Q79.45 42.80 79.45 43.40Q79.45 44.35 80.10 44.35Q80.35 44.35 80.73 44.23Q81.10 44.10 81.60 43.75Q82.75 42.95 83.95 41.67Q85.15 40.40 86.18 39.08Q87.20 37.75 87.85 36.80Q87.95 36.70 88.05 36.70Q88.15 36.70 88.23 36.90Q88.30 37.10 88.10 37.35Q86.55 39.55 85.00 41.27Q83.45 43 82.00 44.05Q81.15 44.70 80.38 44.92Q79.60 45.15 79.05 45.10ZM89.05 45.45Q87.85 45.45 87.03 44.55Q86.20 43.65 86.20 41.75Q86.20 40.05 86.95 38.35Q87.70 36.65 88.98 35.27Q90.25 33.90 91.80 33.20Q92.20 33.05 92.55 32.95Q92.90 32.85 93.25 32.85Q94.00 32.85 94.55 33.25Q95.10 33.65 95.10 34.50Q95.10 34.70 95.08 34.85Q95.05 35 95.00 35.20Q94.95 35.40 94.73 35.45Q94.50 35.50 94.50 35.30Q94.60 34.45 94.18 33.98Q93.75 33.50 93.10 33.50Q92.65 33.50 92.25 33.70Q91.00 34.30 90.08 35.52Q89.15 36.75 88.68 38.20Q88.20 39.65 88.20 41Q88.25 43.90 90.15 43.90Q91.20 43.90 92.35 43.05Q93.50 42.20 94.35 40.70Q95.20 39.20 95.70 37.48Q96.20 35.75 96.20 34.35Q96.20 33.50 96.00 32.80Q95.80 32.10 95.30 31.75Q95.05 31.55 94.50 31.55Q93.65 31.55 93.20 31.90Q92.90 32.10 92.85 32.10Q92.65 32.10 92.65 31.85Q92.65 31.65 92.85 31.35Q93.15 30.85 93.80 30.60Q94.45 30.35 95.15 30.35Q95.95 30.35 96.55 30.70Q97.85 31.40 97.85 33.65Q97.85 35.25 97.18 37.25Q96.50 39.25 95.33 41.08Q94.15 42.90 92.65 44.05Q90.85 45.45 89.05 45.45ZM102.55 45.45Q101.35 45.45 100.53 44.55Q99.70 43.65 99.70 41.75Q99.70 40.05 100.45 38.35Q101.20 36.65 102.48 35.27Q103.75 33.90 105.30 33.20Q105.70 33.05 106.05 32.95Q106.40 32.85 106.75 32.85Q107.50 32.85 108.05 33.25Q108.60 33.65 108.60 34.50Q108.60 34.70 108.58 34.85Q108.55 35 108.50 35.20Q108.45 35.40 108.23 35.45Q108.00 35.50 108.00 35.30Q108.10 34.45 107.68 33.98Q107.25 33.50 106.60 33.50Q106.15 33.50 105.75 33.70Q104.50 34.30 103.58 35.52Q102.65 36.75 102.18 38.20Q101.70 39.65 101.70 41Q101.75 43.90 103.65 43.90Q104.70 43.90 105.85 43.05Q107.00 42.20 107.85 40.70Q108.70 39.20 109.20 37.48Q109.70 35.75 109.70 34.35Q109.70 33.50 109.50 32.80Q109.30 32.10 108.80 31.75Q108.55 31.55 108.00 31.55Q107.15 31.55 106.70 31.90Q106.40 32.10 106.35 32.10Q106.15 32.10 106.15 31.85Q106.15 31.65 106.35 31.35Q106.65 30.85 107.30 30.60Q107.95 30.35 108.65 30.35Q109.45 30.35 110.05 30.70Q111.35 31.40 111.35 33.65Q111.35 35.25 110.68 37.25Q110.00 39.25 108.83 41.08Q107.65 42.90 106.15 44.05Q104.35 45.45 102.55 45.45ZM115.70 45.05Q114.35 45.05 113.80 44.40Q113.25 43.75 113.25 42.70Q113.25 42.15 113.38 41.55Q113.50 40.95 113.70 40.30Q113.95 39.40 114.33 38.52Q114.70 37.65 115.15 36.80L117.00 33.25Q117.05 33.15 117.13 33.05Q117.20 32.95 117.25 32.85Q116.95 32.90 116.65 33.02Q116.35 33.15 116.10 33.25Q115.75 33.40 115.38 33.52Q115.00 33.65 114.75 33.75Q114.60 33.80 114.35 33.80Q114.00 33.80 114.00 33.55Q114.00 33.15 114.43 32.70Q114.85 32.25 115.20 32.20Q115.75 32.10 116.48 31.90Q117.20 31.70 117.90 31.55Q118.60 30.25 119.18 28.90Q119.75 27.55 120.05 26.15Q120.15 25.90 120.15 25.67Q120.15 25.45 120.15 25.25Q120.15 24.60 119.88 24.38Q119.60 24.15 119.20 24.15Q118.85 24.15 118.35 24.30Q117.85 24.45 117.45 24.70L117.50 24.60Q117.50 24.25 117.65 24.25L120.25 23.20L121.80 22.45Q122.20 22.25 122.50 22.10Q122.80 21.95 122.85 21.95L122.90 21.95Q123.40 21.95 123.40 22.65Q123.40 23.15 123.10 23.90Q122.35 25.75 121.38 27.60Q120.40 29.45 119.40 31.30Q120.20 31.20 120.88 31.20Q121.55 31.20 122.20 31.25Q122.90 31.30 123.23 31.73Q123.55 32.15 123.55 32.60Q123.55 32.80 123.45 33.10Q123.40 33.30 123.30 33.30Q123.00 33.30 123.10 32.90Q123.35 32.30 122.95 32.05Q122.55 31.80 121.85 31.80Q121.65 31.80 121.40 31.82Q121.15 31.85 120.90 31.90Q120.35 31.95 119.80 32.10Q119.25 32.25 118.85 32.35L117.70 34.55Q117.50 34.90 117.08 35.83Q116.65 36.75 116.18 37.95Q115.70 39.15 115.38 40.33Q115.05 41.50 115.05 42.40Q115.05 43.40 115.65 43.80Q116.00 44 116.40 44Q117.35 44 118.40 43.23Q119.45 42.45 120.35 41.48Q121.25 40.50 121.70 40Q121.80 39.90 122.40 39.20Q123.00 38.50 123.68 37.67Q124.35 36.85 124.65 36.40Q124.65 36.40 124.75 36.50Q124.85 36.70 124.70 36.90Q124.10 37.70 123.43 38.58Q122.75 39.45 122.05 40.30Q121.35 41.20 120.33 42.33Q119.30 43.45 118.13 44.25Q116.95 45.05 115.70 45.05Z" fill="none" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                
+                <!-- Animation effects -->
+                <path class="boop" opacity="0" d="M5.85 46.85Q4.30 46.85 3.20 45.98Q2.10 45.10 1.40 43.70Q0.70 42.30 0.35 40.77Q0 39.25 0 38Q0 37.80 0.05 37.48Q0.10 37.15 0.35 37.15Q0.45 37.15 0.45 37.30Q0.45 37.70 0.55 38.17Q0.65 38.65 0.75 39.10Q1 40.25 1.57 41.40Q2.15 42.55 3.10 43.30Q4.05 44.05 5.40 44.05Q6.60 44.05 7.55 43.55Q8.50 43.05 9.25 42.15Q10.85 40.20 12.08 37.38Q13.30 34.55 14.30 31.55Q15.30 28.55 16.05 26.15Q16.10 26 16.30 25.38Q16.50 24.75 16.70 24.13Q16.90 23.50 16.90 23.40Q16.95 22.50 17 21.67Q17.05 20.85 17.75 20.20Q15.95 20.80 14.13 21.38Q12.30 21.95 10.55 22.65Q9.45 23.10 8.60 23.90Q7.75 24.70 7.75 26Q7.75 27 8.23 27.95Q8.70 28.90 9.15 29.80Q9.60 30.70 9.60 31.70Q9.60 32.70 8.88 33.55Q8.15 34.40 7.10 34.40Q6.90 34.40 6.50 34.30Q6.10 34.20 6.10 34Q6.10 33.85 6.25 33.85Q6.30 33.85 6.40 33.92Q6.50 34 6.65 34Q7.25 34 7.63 33.42Q8.00 32.85 8.20 32.15Q8.40 31.45 8.40 31Q8.40 29.85 7.88 28.82Q7.35 27.80 6.83 26.80Q6.30 25.80 6.30 24.75Q6.30 23.40 7.30 22.60Q8.30 21.80 9.90 21.32Q11.50 20.85 13.25 20.55Q15.00 20.25 16.58 19.92Q18.15 19.60 19.05 19.05Q19.40 18.85 20.00 18.17Q20.60 17.50 20.80 17.50Q20.95 17.50 20.95 17.80Q20.95 18.20 20.70 18.88Q20.45 19.55 20.15 19.85Q19.55 20.50 19.20 21.25Q18.85 22 18.50 22.85Q18 24.10 17.55 25.40Q17.10 26.70 16.65 28Q15.50 31.15 14.43 34.33Q13.35 37.50 12.00 40.60Q11.50 41.80 10.63 43.25Q9.75 44.70 8.55 45.77Q7.35 46.85 5.85 46.85ZM36.35 45.45Q34.95 45.45 34.95 43.30Q34.95 41.95 35.35 40.73Q35.75 39.50 36.10 38.25Q35.30 39.10 34.58 39.90Q33.85 40.70 33.00 41.50Q32.20 42.25 31.35 42.98Q30.50 43.70 29.65 44.25Q28.10 45.25 27.30 45.25Q26.50 45.25 26.50 44.30Q26.50 43.20 27.35 41.35Q27.85 40.25 28.73 38.95Q29.60 37.65 30.55 36.40Q31.45 35.30 32.68 34.15Q33.90 33 35.35 32.20Q36.80 31.40 38.25 31.40Q39.40 31.40 40.18 31.92Q40.95 32.45 40.95 33.60Q40.95 34.80 40.50 35.05Q40.35 35.20 40.30 35.15Q40.25 35.10 40.25 35.10Q40.20 34.60 39.80 34.08Q39.40 33.55 38.80 33.35Q38.15 33.15 37.35 33.15Q35.50 33.15 33.88 34.23Q32.25 35.30 31.10 36.75Q30.15 38 29.58 39.33Q29.00 40.65 29.00 41.65Q29.00 43.15 29.80 43.15Q30.30 43.15 30.90 42.70Q31.50 42.25 31.90 41.90Q33.35 40.60 34.63 39.02Q35.90 37.45 36.40 36.80Q36.50 36.70 36.98 36.48Q37.45 36.25 38.00 36.10L39.05 35.85Q39.35 35.85 39.35 35.90Q39.05 36.30 38.53 37.55Q38.00 38.80 37.60 40.23Q37.20 41.65 37.20 42.65Q37.20 43.45 37.50 43.70Q37.65 43.85 37.90 43.85Q38.30 43.85 38.75 43.58Q39.20 43.30 39.70 42.95Q41.45 41.65 43.03 39.75Q44.60 37.85 45.70 36.35Q45.70 36.35 45.80 36.45Q45.90 36.70 45.80 36.85Q45.15 37.70 44.45 38.63Q43.75 39.55 43.05 40.45Q42.30 41.30 41.53 42.13Q40.75 42.95 39.90 43.65Q38.90 44.45 37.98 44.95Q37.05 45.45 36.35 45.45ZM58.15 48.45Q56.20 48.45 56.20 45.75Q56.20 44.85 56.40 43.63Q56.60 42.40 57.05 40.80Q57.20 40.15 57.68 38.77Q58.15 37.40 58.50 36.45Q57.45 37.25 56.10 38.48Q54.75 39.70 53.58 40.90Q52.40 42.10 51.80 42.80Q51.40 43.35 51.40 43.15L50.85 43.55Q50.50 43.75 50.23 43.75Q49.95 43.75 49.95 43.50Q49.95 43.10 50.13 42.20Q50.30 41.30 50.55 40.15Q50.80 39 51.13 37.98Q51.45 36.95 51.75 36.35Q49.55 38.10 47.83 39.95Q46.10 41.80 45.40 44.20Q45.35 44.40 45.03 44.52Q44.70 44.65 44.30 44.75Q43.95 44.80 43.55 44.92Q43.15 45.05 42.80 45.20Q42.80 45.10 42.90 44.90Q43.00 44.70 43.05 44.60Q43.20 44.30 43.38 43.77Q43.55 43.25 43.90 42.60Q44.35 41.75 44.78 40.70Q45.20 39.65 45.50 38.88Q45.80 38.10 45.80 38.10L46.40 36.75Q46.50 36.40 46.63 36.10Q46.75 35.80 46.80 35.50Q46.85 35.30 46.85 35Q46.85 34.50 46.63 34.20Q46.40 33.90 45.70 33.90Q45.15 33.90 44.53 34.15Q43.90 34.40 43.35 34.65Q43.40 34.55 43.48 34.35Q43.55 34.15 43.60 34.10Q43.85 34 44.88 33.60Q45.90 33.20 46.80 32.85Q47.20 32.70 47.63 32.48Q48.05 32.25 48.40 32.05Q48.50 31.95 48.85 31.75Q49.20 31.55 49.30 31.55L49.40 31.55Q49.85 31.55 49.85 32.25Q49.75 33 49.30 34.20Q48.90 35.30 48.38 36.35Q47.85 37.40 47.75 37.65L46.35 40.85Q48.45 38.70 50.25 36.73Q52.05 34.75 53.65 32.85Q54.60 31.70 56.00 31.70Q56.25 31.70 56.58 31.73Q56.90 31.75 57.10 31.85Q57.35 31.95 57.23 32.08Q57.10 32.20 56.95 32.25Q56.15 32.45 55.30 33.60Q54.45 34.75 53.73 36.33Q53.00 37.90 52.55 39.42Q52.10 40.95 52.00 41.85Q52.00 41.90 51.98 41.98Q51.95 42.05 51.95 42.15Q52.75 41.15 53.55 40.27Q54.35 39.40 55.15 38.55Q56.05 37.60 57 36.73Q57.95 35.85 58.90 34.90Q59.15 34.60 59.48 34.48Q59.80 34.35 60.15 34.30Q60.60 34.20 61.00 34.13Q61.40 34.05 61.75 33.85Q62.10 33.60 62.23 33.65Q62.35 33.70 62.35 33.75L62.35 33.85Q62.35 34.15 61.95 34.50Q61.35 35.05 60.70 36.23Q60.05 37.40 59.53 38.77Q59 40.15 58.65 41.30Q58 43.55 58 45.05Q58 47.10 59.40 47.10Q60.15 47.10 61.03 46.25Q61.90 45.40 62.40 44.90Q62.45 44.90 62.48 44.92Q62.50 44.95 62.45 44.95Q62.30 45.60 60.85 47Q60.15 47.70 59.35 48.08Q58.55 48.45 58.15 48.45ZM79.05 45.10Q78.25 45 77.90 44.45Q77.55 43.90 77.55 43.15Q77.55 42.10 77.98 40.83Q78.40 39.55 78.93 38.45Q79.45 37.35 79.75 36.80L80.60 35.40Q79.95 35.65 79.45 35.65Q78.25 35.65 77.70 34.45Q77.50 34.70 77.25 35.10Q77.00 35.50 76.90 35.70Q76.15 36.75 75.10 38.13Q74.05 39.50 73.00 40.73Q71.95 41.95 71.10 42.65L71.05 42.65Q71.00 42.65 70.95 42.50Q70.90 42.35 71.00 42.25Q71.70 41.55 72.40 40.73Q73.10 39.90 73.70 39.10Q74.25 38.40 74.95 37.40Q75.65 36.40 76.25 35.38Q76.85 34.35 77.10 33.60Q77.05 33.20 77.15 32.33Q77.25 31.45 78.00 30Q78.30 29.35 79.05 29.35Q79.55 29.35 80.03 29.63Q80.50 29.90 80.65 30.30Q79.75 31.05 79.10 31.90Q78.85 32.25 78.55 32.83Q78.25 33.40 78.25 33.95Q78.25 34.30 78.45 34.58Q78.65 34.85 79.25 34.85Q80.05 34.85 80.88 34.45Q81.70 34.05 82.40 33.80Q82.75 33.70 83.05 33.60Q83.35 33.50 83.60 33.50Q84.30 33.50 84.25 34.25Q83.15 35.35 82.25 36.67Q81.35 38 80.65 39.45Q80.50 39.80 80.20 40.52Q79.90 41.25 79.68 42.02Q79.45 42.80 79.45 43.40Q79.45 44.35 80.10 44.35Q80.35 44.35 80.73 44.23Q81.10 44.10 81.60 43.75Q82.75 42.95 83.95 41.67Q85.15 40.40 86.18 39.08Q87.20 37.75 87.85 36.80Q87.95 36.70 88.05 36.70Q88.15 36.70 88.23 36.90Q88.30 37.10 88.10 37.35Q86.55 39.55 85.00 41.27Q83.45 43 82.00 44.05Q81.15 44.70 80.38 44.92Q79.60 45.15 79.05 45.10ZM89.05 45.45Q87.85 45.45 87.03 44.55Q86.20 43.65 86.20 41.75Q86.20 40.05 86.95 38.35Q87.70 36.65 88.98 35.27Q90.25 33.90 91.80 33.20Q92.20 33.05 92.55 32.95Q92.90 32.85 93.25 32.85Q94.00 32.85 94.55 33.25Q95.10 33.65 95.10 34.50Q95.10 34.70 95.08 34.85Q95.05 35 95.00 35.20Q94.95 35.40 94.73 35.45Q94.50 35.50 94.50 35.30Q94.60 34.45 94.18 33.98Q93.75 33.50 93.10 33.50Q92.65 33.50 92.25 33.70Q91.00 34.30 90.08 35.52Q89.15 36.75 88.68 38.20Q88.20 39.65 88.20 41Q88.25 43.90 90.15 43.90Q91.20 43.90 92.35 43.05Q93.50 42.20 94.35 40.70Q95.20 39.20 95.70 37.48Q96.20 35.75 96.20 34.35Q96.20 33.50 96.00 32.80Q95.80 32.10 95.30 31.75Q95.05 31.55 94.50 31.55Q93.65 31.55 93.20 31.90Q92.90 32.10 92.85 32.10Q92.65 32.10 92.65 31.85Q92.65 31.65 92.85 31.35Q93.15 30.85 93.80 30.60Q94.45 30.35 95.15 30.35Q95.95 30.35 96.55 30.70Q97.85 31.40 97.85 33.65Q97.85 35.25 97.18 37.25Q96.50 39.25 95.33 41.08Q94.15 42.90 92.65 44.05Q90.85 45.45 89.05 45.45ZM102.55 45.45Q101.35 45.45 100.53 44.55Q99.70 43.65 99.70 41.75Q99.70 40.05 100.45 38.35Q101.20 36.65 102.48 35.27Q103.75 33.90 105.30 33.20Q105.70 33.05 106.05 32.95Q106.40 32.85 106.75 32.85Q107.50 32.85 108.05 33.25Q108.60 33.65 108.60 34.50Q108.60 34.70 108.58 34.85Q108.55 35 108.50 35.20Q108.45 35.40 108.23 35.45Q108.00 35.50 108.00 35.30Q108.10 34.45 107.68 33.98Q107.25 33.50 106.60 33.50Q106.15 33.50 105.75 33.70Q104.50 34.30 103.58 35.52Q102.65 36.75 102.18 38.20Q101.70 39.65 101.70 41Q101.75 43.90 103.65 43.90Q104.70 43.90 105.85 43.05Q107.00 42.20 107.85 40.70Q108.70 39.20 109.20 37.48Q109.70 35.75 109.70 34.35Q109.70 33.50 109.50 32.80Q109.30 32.10 108.80 31.75Q108.55 31.55 108.00 31.55Q107.15 31.55 106.70 31.90Q106.40 32.10 106.35 32.10Q106.15 32.10 106.15 31.85Q106.15 31.65 106.35 31.35Q106.65 30.85 107.30 30.60Q107.95 30.35 108.65 30.35Q109.45 30.35 110.05 30.70Q111.35 31.40 111.35 33.65Q111.35 35.25 110.68 37.25Q110.00 39.25 108.83 41.08Q107.65 42.90 106.15 44.05Q104.35 45.45 102.55 45.45ZM115.70 45.05Q114.35 45.05 113.80 44.40Q113.25 43.75 113.25 42.70Q113.25 42.15 113.38 41.55Q113.50 40.95 113.70 40.30Q113.95 39.40 114.33 38.52Q114.70 37.65 115.15 36.80L117.00 33.25Q117.05 33.15 117.13 33.05Q117.20 32.95 117.25 32.85Q116.95 32.90 116.65 33.02Q116.35 33.15 116.10 33.25Q115.75 33.40 115.38 33.52Q115.00 33.65 114.75 33.75Q114.60 33.80 114.35 33.80Q114.00 33.80 114.00 33.55Q114.00 33.15 114.43 32.70Q114.85 32.25 115.20 32.20Q115.75 32.10 116.48 31.90Q117.20 31.70 117.90 31.55Q118.60 30.25 119.18 28.90Q119.75 27.55 120.05 26.15Q120.15 25.90 120.15 25.67Q120.15 25.45 120.15 25.25Q120.15 24.60 119.88 24.38Q119.60 24.15 119.20 24.15Q118.85 24.15 118.35 24.30Q117.85 24.45 117.45 24.70L117.50 24.60Q117.50 24.25 117.65 24.25L120.25 23.20L121.80 22.45Q122.20 22.25 122.50 22.10Q122.80 21.95 122.85 21.95L122.90 21.95Q123.40 21.95 123.40 22.65Q123.40 23.15 123.10 23.90Q122.35 25.75 121.38 27.60Q120.40 29.45 119.40 31.30Q120.20 31.20 120.88 31.20Q121.55 31.20 122.20 31.25Q122.90 31.30 123.23 31.73Q123.55 32.15 123.55 32.60Q123.55 32.80 123.45 33.10Q123.40 33.30 123.30 33.30Q123.00 33.30 123.10 32.90Q123.35 32.30 122.95 32.05Q122.55 31.80 121.85 31.80Q121.65 31.80 121.40 31.82Q121.15 31.85 120.90 31.90Q120.35 31.95 119.80 32.10Q119.25 32.25 118.85 32.35L117.70 34.55Q117.50 34.90 117.08 35.83Q116.65 36.75 116.18 37.95Q115.70 39.15 115.38 40.33Q115.05 41.50 115.05 42.40Q115.05 43.40 115.65 43.80Q116.00 44 116.40 44Q117.35 44 118.40 43.23Q119.45 42.45 120.35 41.48Q121.25 40.50 121.70 40Q121.80 39.90 122.40 39.20Q123.00 38.50 123.68 37.67Q124.35 36.85 124.65 36.40Q124.65 36.40 124.75 36.50Q124.85 36.70 124.70 36.90Q124.10 37.70 123.43 38.58Q122.75 39.45 122.05 40.30Q121.35 41.20 120.33 42.33Q119.30 43.45 118.13 44.25Q116.95 45.05 115.70 45.05Z" fill="none" stroke="rgba(255,255,255,0.3)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                
+                <path class="boop2" opacity="0" d="M5.85 46.85Q4.30 46.85 3.20 45.98Q2.10 45.10 1.40 43.70Q0.70 42.30 0.35 40.77Q0 39.25 0 38Q0 37.80 0.05 37.48Q0.10 37.15 0.35 37.15Q0.45 37.15 0.45 37.30Q0.45 37.70 0.55 38.17Q0.65 38.65 0.75 39.10Q1 40.25 1.57 41.40Q2.15 42.55 3.10 43.30Q4.05 44.05 5.40 44.05Q6.60 44.05 7.55 43.55Q8.50 43.05 9.25 42.15Q10.85 40.20 12.08 37.38Q13.30 34.55 14.30 31.55Q15.30 28.55 16.05 26.15Q16.10 26 16.30 25.38Q16.50 24.75 16.70 24.13Q16.90 23.50 16.90 23.40Q16.95 22.50 17 21.67Q17.05 20.85 17.75 20.20Q15.95 20.80 14.13 21.38Q12.30 21.95 10.55 22.65Q9.45 23.10 8.60 23.90Q7.75 24.70 7.75 26Q7.75 27 8.23 27.95Q8.70 28.90 9.15 29.80Q9.60 30.70 9.60 31.70Q9.60 32.70 8.88 33.55Q8.15 34.40 7.10 34.40Q6.90 34.40 6.50 34.30Q6.10 34.20 6.10 34Q6.10 33.85 6.25 33.85Q6.30 33.85 6.40 33.92Q6.50 34 6.65 34Q7.25 34 7.63 33.42Q8.00 32.85 8.20 32.15Q8.40 31.45 8.40 31Q8.40 29.85 7.88 28.82Q7.35 27.80 6.83 26.80Q6.30 25.80 6.30 24.75Q6.30 23.40 7.30 22.60Q8.30 21.80 9.90 21.32Q11.50 20.85 13.25 20.55Q15.00 20.25 16.58 19.92Q18.15 19.60 19.05 19.05Q19.40 18.85 20.00 18.17Q20.60 17.50 20.80 17.50Q20.95 17.50 20.95 17.80Q20.95 18.20 20.70 18.88Q20.45 19.55 20.15 19.85Q19.55 20.50 19.20 21.25Q18.85 22 18.50 22.85Q18 24.10 17.55 25.40Q17.10 26.70 16.65 28Q15.50 31.15 14.43 34.33Q13.35 37.50 12.00 40.60Q11.50 41.80 10.63 43.25Q9.75 44.70 8.55 45.77Q7.35 46.85 5.85 46.85ZM36.35 45.45Q34.95 45.45 34.95 43.30Q34.95 41.95 35.35 40.73Q35.75 39.50 36.10 38.25Q35.30 39.10 34.58 39.90Q33.85 40.70 33.00 41.50Q32.20 42.25 31.35 42.98Q30.50 43.70 29.65 44.25Q28.10 45.25 27.30 45.25Q26.50 45.25 26.50 44.30Q26.50 43.20 27.35 41.35Q27.85 40.25 28.73 38.95Q29.60 37.65 30.55 36.40Q31.45 35.30 32.68 34.15Q33.90 33 35.35 32.20Q36.80 31.40 38.25 31.40Q39.40 31.40 40.18 31.92Q40.95 32.45 40.95 33.60Q40.95 34.80 40.50 35.05Q40.35 35.20 40.30 35.15Q40.25 35.10 40.25 35.10Q40.20 34.60 39.80 34.08Q39.40 33.55 38.80 33.35Q38.15 33.15 37.35 33.15Q35.50 33.15 33.88 34.23Q32.25 35.30 31.10 36.75Q30.15 38 29.58 39.33Q29.00 40.65 29.00 41.65Q29.00 43.15 29.80 43.15Q30.30 43.15 30.90 42.70Q31.50 42.25 31.90 41.90Q33.35 40.60 34.63 39.02Q35.90 37.45 36.40 36.80Q36.50 36.70 36.98 36.48Q37.45 36.25 38.00 36.10L39.05 35.85Q39.35 35.85 39.35 35.90Q39.05 36.30 38.53 37.55Q38.00 38.80 37.60 40.23Q37.20 41.65 37.20 42.65Q37.20 43.45 37.50 43.70Q37.65 43.85 37.90 43.85Q38.30 43.85 38.75 43.58Q39.20 43.30 39.70 42.95Q41.45 41.65 43.03 39.75Q44.60 37.85 45.70 36.35Q45.70 36.35 45.80 36.45Q45.90 36.70 45.80 36.85Q45.15 37.70 44.45 38.63Q43.75 39.55 43.05 40.45Q42.30 41.30 41.53 42.13Q40.75 42.95 39.90 43.65Q38.90 44.45 37.98 44.95Q37.05 45.45 36.35 45.45ZM58.15 48.45Q56.20 48.45 56.20 45.75Q56.20 44.85 56.40 43.63Q56.60 42.40 57.05 40.80Q57.20 40.15 57.68 38.77Q58.15 37.40 58.50 36.45Q57.45 37.25 56.10 38.48Q54.75 39.70 53.58 40.90Q52.40 42.10 51.80 42.80Q51.40 43.35 51.40 43.15L50.85 43.55Q50.50 43.75 50.23 43.75Q49.95 43.75 49.95 43.50Q49.95 43.10 50.13 42.20Q50.30 41.30 50.55 40.15Q50.80 39 51.13 37.98Q51.45 36.95 51.75 36.35Q49.55 38.10 47.83 39.95Q46.10 41.80 45.40 44.20Q45.35 44.40 45.03 44.52Q44.70 44.65 44.30 44.75Q43.95 44.80 43.55 44.92Q43.15 45.05 42.80 45.20Q42.80 45.10 42.90 44.90Q43.00 44.70 43.05 44.60Q43.20 44.30 43.38 43.77Q43.55 43.25 43.90 42.60Q44.35 41.75 44.78 40.70Q45.20 39.65 45.50 38.88Q45.80 38.10 45.80 38.10L46.40 36.75Q46.50 36.40 46.63 36.10Q46.75 35.80 46.80 35.50Q46.85 35.30 46.85 35Q46.85 34.50 46.63 34.20Q46.40 33.90 45.70 33.90Q45.15 33.90 44.53 34.15Q43.90 34.40 43.35 34.65Q43.40 34.55 43.48 34.35Q43.55 34.15 43.60 34.10Q43.85 34 44.88 33.60Q45.90 33.20 46.80 32.85Q47.20 32.70 47.63 32.48Q48.05 32.25 48.40 32.05Q48.50 31.95 48.85 31.75Q49.20 31.55 49.30 31.55L49.40 31.55Q49.85 31.55 49.85 32.25Q49.75 33 49.30 34.20Q48.90 35.30 48.38 36.35Q47.85 37.40 47.75 37.65L46.35 40.85Q48.45 38.70 50.25 36.73Q52.05 34.75 53.65 32.85Q54.60 31.70 56.00 31.70Q56.25 31.70 56.58 31.73Q56.90 31.75 57.10 31.85Q57.35 31.95 57.23 32.08Q57.10 32.20 56.95 32.25Q56.15 32.45 55.30 33.60Q54.45 34.75 53.73 36.33Q53.00 37.90 52.55 39.42Q52.10 40.95 52.00 41.85Q52.00 41.90 51.98 41.98Q51.95 42.05 51.95 42.15Q52.75 41.15 53.55 40.27Q54.35 39.40 55.15 38.55Q56.05 37.60 57 36.73Q57.95 35.85 58.90 34.90Q59.15 34.60 59.48 34.48Q59.80 34.35 60.15 34.30Q60.60 34.20 61.00 34.13Q61.40 34.05 61.75 33.85Q62.10 33.60 62.23 33.65Q62.35 33.70 62.35 33.75L62.35 33.85Q62.35 34.15 61.95 34.50Q61.35 35.05 60.70 36.23Q60.05 37.40 59.53 38.77Q59 40.15 58.65 41.30Q58 43.55 58 45.05Q58 47.10 59.40 47.10Q60.15 47.10 61.03 46.25Q61.90 45.40 62.40 44.90Q62.45 44.90 62.48 44.92Q62.50 44.95 62.45 44.95Q62.30 45.60 60.85 47Q60.15 47.70 59.35 48.08Q58.55 48.45 58.15 48.45ZM79.05 45.10Q78.25 45 77.90 44.45Q77.55 43.90 77.55 43.15Q77.55 42.10 77.98 40.83Q78.40 39.55 78.93 38.45Q79.45 37.35 79.75 36.80L80.60 35.40Q79.95 35.65 79.45 35.65Q78.25 35.65 77.70 34.45Q77.50 34.70 77.25 35.10Q77.00 35.50 76.90 35.70Q76.15 36.75 75.10 38.13Q74.05 39.50 73.00 40.73Q71.95 41.95 71.10 42.65L71.05 42.65Q71.00 42.65 70.95 42.50Q70.90 42.35 71.00 42.25Q71.70 41.55 72.40 40.73Q73.10 39.90 73.70 39.10Q74.25 38.40 74.95 37.40Q75.65 36.40 76.25 35.38Q76.85 34.35 77.10 33.60Q77.05 33.20 77.15 32.33Q77.25 31.45 78.00 30Q78.30 29.35 79.05 29.35Q79.55 29.35 80.03 29.63Q80.50 29.90 80.65 30.30Q79.75 31.05 79.10 31.90Q78.85 32.25 78.55 32.83Q78.25 33.40 78.25 33.95Q78.25 34.30 78.45 34.58Q78.65 34.85 79.25 34.85Q80.05 34.85 80.88 34.45Q81.70 34.05 82.40 33.80Q82.75 33.70 83.05 33.60Q83.35 33.50 83.60 33.50Q84.30 33.50 84.25 34.25Q83.15 35.35 82.25 36.67Q81.35 38 80.65 39.45Q80.50 39.80 80.20 40.52Q79.90 41.25 79.68 42.02Q79.45 42.80 79.45 43.40Q79.45 44.35 80.10 44.35Q80.35 44.35 80.73 44.23Q81.10 44.10 81.60 43.75Q82.75 42.95 83.95 41.67Q85.15 40.40 86.18 39.08Q87.20 37.75 87.85 36.80Q87.95 36.70 88.05 36.70Q88.15 36.70 88.23 36.90Q88.30 37.10 88.10 37.35Q86.55 39.55 85.00 41.27Q83.45 43 82.00 44.05Q81.15 44.70 80.38 44.92Q79.60 45.15 79.05 45.10ZM89.05 45.45Q87.85 45.45 87.03 44.55Q86.20 43.65 86.20 41.75Q86.20 40.05 86.95 38.35Q87.70 36.65 88.98 35.27Q90.25 33.90 91.80 33.20Q92.20 33.05 92.55 32.95Q92.90 32.85 93.25 32.85Q94.00 32.85 94.55 33.25Q95.10 33.65 95.10 34.50Q95.10 34.70 95.08 34.85Q95.05 35 95.00 35.20Q94.95 35.40 94.73 35.45Q94.50 35.50 94.50 35.30Q94.60 34.45 94.18 33.98Q93.75 33.50 93.10 33.50Q92.65 33.50 92.25 33.70Q91.00 34.30 90.08 35.52Q89.15 36.75 88.68 38.20Q88.20 39.65 88.20 41Q88.25 43.90 90.15 43.90Q91.20 43.90 92.35 43.05Q93.50 42.20 94.35 40.70Q95.20 39.20 95.70 37.48Q96.20 35.75 96.20 34.35Q96.20 33.50 96.00 32.80Q95.80 32.10 95.30 31.75Q95.05 31.55 94.50 31.55Q93.65 31.55 93.20 31.90Q92.90 32.10 92.85 32.10Q92.65 32.10 92.65 31.85Q92.65 31.65 92.85 31.35Q93.15 30.85 93.80 30.60Q94.45 30.35 95.15 30.35Q95.95 30.35 96.55 30.70Q97.85 31.40 97.85 33.65Q97.85 35.25 97.18 37.25Q96.50 39.25 95.33 41.08Q94.15 42.90 92.65 44.05Q90.85 45.45 89.05 45.45ZM102.55 45.45Q101.35 45.45 100.53 44.55Q99.70 43.65 99.70 41.75Q99.70 40.05 100.45 38.35Q101.20 36.65 102.48 35.27Q103.75 33.90 105.30 33.20Q105.70 33.05 106.05 32.95Q106.40 32.85 106.75 32.85Q107.50 32.85 108.05 33.25Q108.60 33.65 108.60 34.50Q108.60 34.70 108.58 34.85Q108.55 35 108.50 35.20Q108.45 35.40 108.23 35.45Q108.00 35.50 108.00 35.30Q108.10 34.45 107.68 33.98Q107.25 33.50 106.60 33.50Q106.15 33.50 105.75 33.70Q104.50 34.30 103.58 35.52Q102.65 36.75 102.18 38.20Q101.70 39.65 101.70 41Q101.75 43.90 103.65 43.90Q104.70 43.90 105.85 43.05Q107.00 42.20 107.85 40.70Q108.70 39.20 109.20 37.48Q109.70 35.75 109.70 34.35Q109.70 33.50 109.50 32.80Q109.30 32.10 108.80 31.75Q108.55 31.55 108.00 31.55Q107.15 31.55 106.70 31.90Q106.40 32.10 106.35 32.10Q106.15 32.10 106.15 31.85Q106.15 31.65 106.35 31.35Q106.65 30.85 107.30 30.60Q107.95 30.35 108.65 30.35Q109.45 30.35 110.05 30.70Q111.35 31.40 111.35 33.65Q111.35 35.25 110.68 37.25Q110.00 39.25 108.83 41.08Q107.65 42.90 106.15 44.05Q104.35 45.45 102.55 45.45ZM115.70 45.05Q114.35 45.05 113.80 44.40Q113.25 43.75 113.25 42.70Q113.25 42.15 113.38 41.55Q113.50 40.95 113.70 40.30Q113.95 39.40 114.33 38.52Q114.70 37.65 115.15 36.80L117.00 33.25Q117.05 33.15 117.13 33.05Q117.20 32.95 117.25 32.85Q116.95 32.90 116.65 33.02Q116.35 33.15 116.10 33.25Q115.75 33.40 115.38 33.52Q115.00 33.65 114.75 33.75Q114.60 33.80 114.35 33.80Q114.00 33.80 114.00 33.55Q114.00 33.15 114.43 32.70Q114.85 32.25 115.20 32.20Q115.75 32.10 116.48 31.90Q117.20 31.70 117.90 31.55Q118.60 30.25 119.18 28.90Q119.75 27.55 120.05 26.15Q120.15 25.90 120.15 25.67Q120.15 25.45 120.15 25.25Q120.15 24.60 119.88 24.38Q119.60 24.15 119.20 24.15Q118.85 24.15 118.35 24.30Q117.85 24.45 117.45 24.70L117.50 24.60Q117.50 24.25 117.65 24.25L120.25 23.20L121.80 22.45Q122.20 22.25 122.50 22.10Q122.80 21.95 122.85 21.95L122.90 21.95Q123.40 21.95 123.40 22.65Q123.40 23.15 123.10 23.90Q122.35 25.75 121.38 27.60Q120.40 29.45 119.40 31.30Q120.20 31.20 120.88 31.20Q121.55 31.20 122.20 31.25Q122.90 31.30 123.23 31.73Q123.55 32.15 123.55 32.60Q123.55 32.80 123.45 33.10Q123.40 33.30 123.30 33.30Q123.00 33.30 123.10 32.90Q123.35 32.30 122.95 32.05Q122.55 31.80 121.85 31.80Q121.65 31.80 121.40 31.82Q121.15 31.85 120.90 31.90Q120.35 31.95 119.80 32.10Q119.25 32.25 118.85 32.35L117.70 34.55Q117.50 34.90 117.08 35.83Q116.65 36.75 116.18 37.95Q115.70 39.15 115.38 40.33Q115.05 41.50 115.05 42.40Q115.05 43.40 115.65 43.80Q116.00 44 116.40 44Q117.35 44 118.40 43.23Q119.45 42.45 120.35 41.48Q121.25 40.50 121.70 40Q121.80 39.90 122.40 39.20Q123.00 38.50 123.68 37.67Q124.35 36.85 124.65 36.40Q124.65 36.40 124.75 36.50Q124.85 36.70 124.70 36.90Q124.10 37.70 123.43 38.58Q122.75 39.45 122.05 40.30Q121.35 41.20 120.33 42.33Q119.30 43.45 118.13 44.25Q116.95 45.05 115.70 45.05Z" fill="none" stroke="rgba(255,255,255,0.3)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                
+                <!-- Traveling ball -->
+                <circle class="ball" cx="5.85" cy="46.85" r="1.5" fill="#64C898"/>
+            </svg>
+        `;
+        
+        // Setup animation
+        gsap.set(".boop", {opacity: 0})
+        gsap.set(".boop2", {opacity: 0})
+        gsap.set(".ball", {
+            xPercent: -50,
+            yPercent: -50,
+            transformOrigin: "50%, 50%"
+        })
+
+        function startAnimation() {
+            timeline.play(0);
+        }
+
+        const startBall = 0.02;
+        const endBall = 0.98;
+
+        var timeline = gsap.timeline({paused: true})
+        
+        // Initial boop effect
+        timeline.to(".boop", {
+            duration: 0.5,
+            ease: "power4.out",
+            opacity: 0.3
+        })
+        .to(".boop", {
+            duration: 0.3,
+            ease: "back.out(8)",
+            opacity: 0
+        }, "+=0.1")
+        
+        // Ball travels along the handwritten path
+        .to(".ball", {
+            duration: 15,
+            ease: "power1.inOut",
+            motionPath: {
+                path: ".loop",
+                align: ".loop",
+                start: startBall,
+                end: endBall,
+            }
+        }, 0.65)
+        
+        // End boop effect
+        .to(".boop2", {
+            duration: 0.5,
+            ease: "power4.out",
+            opacity: 0.3
+        }, 12)
+        .to(".boop2", {
+            duration: 0.3,
+            ease: "back.out(8)",
+            opacity: 0
+        }, 12.5)
+        
+        // Ball returns
+        .to(".ball", {
+            duration: 15,
+            ease: "power1.inOut",
+            motionPath: {
+                path: ".loop",
+                align: ".loop",
+                start: endBall,
+                end: startBall
+            }
+        }, 13)
+        
+        // Auto restart
+        .add(() => {
+            setTimeout(startAnimation, 1500);
+        }, 28)
+
+        // Start the animation when page loads
+        window.addEventListener('load', () => {
+            setTimeout(startAnimation, 2000);
+        });
+    </script>
+    
+    <!-- Particle System Script -->
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+        import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+        import anime from 'animejs';
+        import { createNoise3D, createNoise4D } from 'simplex-noise';
+
+        let scene, camera, renderer, controls, clock;
+        let composer, bloomPass; 
+
+        let particlesGeometry, particlesMaterial, particleSystem;
+        let currentPositions, sourcePositions, targetPositions, swarmPositions; 
+        let particleSizes, particleOpacities, particleEffectStrengths; 
+        let noise3D, noise4D; 
+
+        let morphTimeline = null; 
+        let isInitialized = false;
+        let isMorphing = false;
+
+        const CONFIG = {
+            particleCount: 15000,
+            shapeSize: 14,
+            swarmDistanceFactor: 1.5,
+            swirlFactor: 4.0,
+            noiseFrequency: 0.1,
+            noiseTimeScale: 0.04,
+            noiseMaxStrength: 2.8,
+            colorScheme: 'fire',
+            morphDuration: 4000,
+            particleSizeRange: [0.08, 0.25],
+            starCount: 18000,
+            bloomStrength: 1.3,
+            bloomRadius: 0.5,
+            bloomThreshold: 0.05,
+            idleFlowStrength: 0.25,
+            idleFlowSpeed: 0.08,
+            idleRotationSpeed: 0.02,
+            morphSizeFactor: 0.5, 
+            morphBrightnessFactor: 0.6 
+        };
+
+        const SHAPES = [
+            { name: 'Sphere', generator: generateSphere },
+            { name: 'Cube', generator: generateCube },
+            { name: 'Pyramid', generator: generatePyramid },
+            { name: 'Torus', generator: generateTorus },
+            { name: 'Galaxy', generator: generateGalaxy },
+            { name: 'Wave', generator: generateWave }
+        ];
+        let currentShapeIndex = 0;
+
+        const morphState = { progress: 0.0 };
+
+        const COLOR_SCHEMES = {
+            fire: { startHue: 0, endHue: 45, saturation: 0.95, lightness: 0.6 },
+            neon: { startHue: 300, endHue: 180, saturation: 1.0, lightness: 0.65 },
+            nature: { startHue: 90, endHue: 160, saturation: 0.85, lightness: 0.55 },
+            rainbow: { startHue: 0, endHue: 360, saturation: 0.9, lightness: 0.6 }
+        };
+
+        const tempVec = new THREE.Vector3();
+        const sourceVec = new THREE.Vector3();
+        const targetVec = new THREE.Vector3();
+        const swarmVec = new THREE.Vector3();
+        const noiseOffset = new THREE.Vector3();
+        const flowVec = new THREE.Vector3();
+        const bezPos = new THREE.Vector3();
+        const swirlAxis = new THREE.Vector3();
+        const currentVec = new THREE.Vector3();
+
+        function generateSphere(count, size) {
+            const points = new Float32Array(count * 3);
+            const phi = Math.PI * (Math.sqrt(5) - 1);
+            for (let i = 0; i < count; i++) {
+                const y = 1 - (i / (count - 1)) * 2;
+                const radius = Math.sqrt(1 - y * y);
+                const theta = phi * i;
+                const x = Math.cos(theta) * radius;
+                const z = Math.sin(theta) * radius;
+                points[i * 3] = x * size;
+                points[i * 3 + 1] = y * size;
+                points[i * 3 + 2] = z * size;
+            }
+            return points;
+        }
+        function generateCube(count, size) {
+            const points = new Float32Array(count * 3);
+            const halfSize = size / 2;
+            for (let i = 0; i < count; i++) {
+                const face = Math.floor(Math.random() * 6);
+                const u = Math.random() * size - halfSize;
+                const v = Math.random() * size - halfSize;
+                switch (face) {
+                    case 0: points.set([halfSize, u, v], i * 3); break;
+                    case 1: points.set([-halfSize, u, v], i * 3); break;
+                    case 2: points.set([u, halfSize, v], i * 3); break;
+                    case 3: points.set([u, -halfSize, v], i * 3); break;
+                    case 4: points.set([u, v, halfSize], i * 3); break;
+                    case 5: points.set([u, v, -halfSize], i * 3); break;
+                }
+            }
+            return points;
+        }
+        function generatePyramid(count, size) {
+            const points = new Float32Array(count * 3);
+            const halfBase = size / 2;
+            const height = size * 1.2;
+            const apex = new THREE.Vector3(0, height / 2, 0);
+            const baseVertices = [
+                new THREE.Vector3(-halfBase, -height / 2, -halfBase), new THREE.Vector3(halfBase, -height / 2, -halfBase),
+                new THREE.Vector3(halfBase, -height / 2, halfBase), new THREE.Vector3(-halfBase, -height / 2, halfBase)
+            ];
+            const baseArea = size * size;
+            const sideFaceHeight = Math.sqrt(Math.pow(height, 2) + Math.pow(halfBase, 2));
+            const sideFaceArea = 0.5 * size * sideFaceHeight;
+            const totalArea = baseArea + 4 * sideFaceArea;
+            const baseWeight = baseArea / totalArea;
+            const sideWeight = sideFaceArea / totalArea;
+            for (let i = 0; i < count; i++) {
+                const r = Math.random();
+                let p = new THREE.Vector3(); let u, v;
+                if (r < baseWeight) {
+                    u = Math.random(); v = Math.random();
+                    p.lerpVectors(baseVertices[0], baseVertices[1], u);
+                    const p2 = new THREE.Vector3().lerpVectors(baseVertices[3], baseVertices[2], u);
+                    p.lerp(p2, v);
+                } else {
+                    const faceIndex = Math.floor((r - baseWeight) / sideWeight);
+                    const v1 = baseVertices[faceIndex]; const v2 = baseVertices[(faceIndex + 1) % 4];
+                    u = Math.random(); v = Math.random();
+                    if (u + v > 1) { u = 1 - u; v = 1 - v; }
+                    p.addVectors(v1, tempVec.subVectors(v2, v1).multiplyScalar(u));
+                    p.add(tempVec.subVectors(apex, v1).multiplyScalar(v));
+                }
+                points.set([p.x, p.y, p.z], i * 3);
+            }
+            return points;
+        }
+        function generateTorus(count, size) {
+            const points = new Float32Array(count * 3);
+            const R = size * 0.7; const r = size * 0.3;
+            for (let i = 0; i < count; i++) {
+                const theta = Math.random() * Math.PI * 2; const phi = Math.random() * Math.PI * 2;
+                const x = (R + r * Math.cos(phi)) * Math.cos(theta);
+                const y = r * Math.sin(phi);
+                const z = (R + r * Math.cos(phi)) * Math.sin(theta);
+                points[i * 3] = x; points[i * 3 + 1] = y; points[i * 3 + 2] = z;
+            }
+            return points;
+        }
+        function generateGalaxy(count, size) {
+            const points = new Float32Array(count * 3);
+            const arms = 4; const armWidth = 0.6; const bulgeFactor = 0.3;
+            for (let i = 0; i < count; i++) {
+                const t = Math.pow(Math.random(), 1.5); const radius = t * size;
+                const armIndex = Math.floor(Math.random() * arms);
+                const armOffset = (armIndex / arms) * Math.PI * 2;
+                const rotationAmount = radius / size * 6; const angle = armOffset + rotationAmount;
+                const spread = (Math.random() - 0.5) * armWidth * (1 - radius / size);
+                const theta = angle + spread;
+                const x = radius * Math.cos(theta); const z = radius * Math.sin(theta);
+                const y = (Math.random() - 0.5) * size * 0.1 * (1 - radius / size * bulgeFactor);
+                points[i * 3] = x; points[i * 3 + 1] = y; points[i * 3 + 2] = z;
+            }
+            return points;
+        }
+        function generateWave(count, size) {
+            const points = new Float32Array(count * 3);
+            const waveScale = size * 0.4; const frequency = 3;
+            for (let i = 0; i < count; i++) {
+                const u = Math.random() * 2 - 1; const v = Math.random() * 2 - 1;
+                const x = u * size; const z = v * size;
+                const dist = Math.sqrt(u * u + v * v); const angle = Math.atan2(v, u);
+                const y = Math.sin(dist * Math.PI * frequency) * Math.cos(angle * 2) * waveScale * (1 - dist);
+                points[i * 3] = x; points[i * 3 + 1] = y; points[i * 3 + 2] = z;
+            }
+            return points;
+        }
+
+        function init() {
+            let progress = 0;
+            const progressBar = document.getElementById('progress');
+            const loadingScreen = document.getElementById('particle-loading');
+            function updateProgress(increment) {
+                progress += increment;
+                progressBar.style.width = `${Math.min(100, progress)}%`;
+                if (progress >= 100) {
+                    setTimeout(() => {
+                        loadingScreen.style.opacity = '0';
+                        setTimeout(() => { loadingScreen.style.display = 'none'; }, 600);
+                    }, 200);
+                }
+            }
+
+            clock = new THREE.Clock();
+            noise3D = createNoise3D(() => Math.random());
+            noise4D = createNoise4D(() => Math.random());
+            scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x000308, 0.03);
+            updateProgress(5);
+
+            camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 8, 28); 
+            camera.lookAt(scene.position);
+            updateProgress(5);
+
+            const canvas = document.getElementById('webglCanvas');
+            renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = 1.1;
+            updateProgress(10);
+
+            // Enable canvas interactions for orbital controls
+            canvas.classList.add('interactive');
+            
+            controls = new OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true; controls.dampingFactor = 0.05;
+            controls.minDistance = 5; controls.maxDistance = 80;
+            controls.autoRotate = true; controls.autoRotateSpeed = 0.3;
+            controls.enablePan = false; // Disable panning to avoid scroll conflicts
+            updateProgress(5);
+
+            scene.add(new THREE.AmbientLight(0x404060));
+            const dirLight1 = new THREE.DirectionalLight(0xffffff, 1.5);
+            dirLight1.position.set(15, 20, 10); scene.add(dirLight1);
+            const dirLight2 = new THREE.DirectionalLight(0x88aaff, 0.9);
+            dirLight2.position.set(-15, -10, -15); scene.add(dirLight2);
+            updateProgress(10);
+
+            setupPostProcessing(); updateProgress(10);
+            createStarfield(); updateProgress(15);
+            setupParticleSystem(); updateProgress(25);
+
+            window.addEventListener('resize', onWindowResize);
+            // Add specific canvas click for morphing (when not dragging)
+            let isDragging = false;
+            canvas.addEventListener('mousedown', () => { isDragging = false; });
+            canvas.addEventListener('mousemove', () => { isDragging = true; });
+            canvas.addEventListener('click', (e) => {
+                if (!isDragging) {
+                    triggerMorph();
+                }
+            });
+            document.getElementById('shape-btn').addEventListener('click', triggerMorph);
+            document.querySelectorAll('.color-option').forEach(option => {
+                option.addEventListener('click', (e) => {
+                    document.querySelectorAll('.color-option').forEach(o => o.classList.remove('active'));
+                    e.target.classList.add('active');
+                    CONFIG.colorScheme = e.target.dataset.scheme;
+                    updateColors();
+                });
+            });
+            document.querySelector(`.color-option[data-scheme="${CONFIG.colorScheme}"]`).classList.add('active');
+            updateProgress(15);
+
+            isInitialized = true;
+            animate();
+            console.log("Particle system initialization complete.");
+        }
+
+        function setupPostProcessing() {
+            composer = new EffectComposer(renderer);
+            composer.addPass(new RenderPass(scene, camera));
+            bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), CONFIG.bloomStrength, CONFIG.bloomRadius, CONFIG.bloomThreshold);
+            composer.addPass(bloomPass);
+        }
+
+        function createStarfield() {
+            const starVertices = []; const starSizes = []; const starColors = [];
+            const starGeometry = new THREE.BufferGeometry();
+            for (let i = 0; i < CONFIG.starCount; i++) {
+                tempVec.set( THREE.MathUtils.randFloatSpread(400), THREE.MathUtils.randFloatSpread(400), THREE.MathUtils.randFloatSpread(400) );
+                if (tempVec.length() < 100) tempVec.setLength(100 + Math.random() * 300);
+                starVertices.push(tempVec.x, tempVec.y, tempVec.z);
+                starSizes.push(Math.random() * 0.15 + 0.05);
+                const color = new THREE.Color();
+                if (Math.random() < 0.1) { color.setHSL(Math.random(), 0.7, 0.65); } else { color.setHSL(0.6, Math.random() * 0.1, 0.8 + Math.random() * 0.2); }
+                starColors.push(color.r, color.g, color.b);
+            }
+            starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starVertices, 3));
+            starGeometry.setAttribute('color', new THREE.Float32BufferAttribute(starColors, 3));
+            starGeometry.setAttribute('size', new THREE.Float32BufferAttribute(starSizes, 1));
+            const starMaterial = new THREE.ShaderMaterial({
+                 uniforms: { pointTexture: { value: createStarTexture() } },
+                 vertexShader: `
+                      attribute float size; varying vec3 vColor; varying float vSize;
+                      void main() {
+                           vColor = color; vSize = size; vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+                           gl_PointSize = size * (400.0 / -mvPosition.z); gl_Position = projectionMatrix * mvPosition;
+                      }`,
+                 fragmentShader: `
+                      uniform sampler2D pointTexture; varying vec3 vColor; varying float vSize;
+                      void main() {
+                           float alpha = texture2D(pointTexture, gl_PointCoord).a; if (alpha < 0.1) discard;
+                           gl_FragColor = vec4(vColor, alpha * 0.9);
+                      }`,
+                 blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, vertexColors: true
+             });
+            scene.add(new THREE.Points(starGeometry, starMaterial));
+        }
+
+        function createStarTexture() {
+            const size = 64; const canvas = document.createElement('canvas');
+            canvas.width = size; canvas.height = size; const context = canvas.getContext('2d');
+            const gradient = context.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+            gradient.addColorStop(0, 'rgba(255,255,255,1)'); gradient.addColorStop(0.2, 'rgba(255,255,255,0.8)');
+            gradient.addColorStop(0.5, 'rgba(255,255,255,0.3)'); gradient.addColorStop(1, 'rgba(255,255,255,0)');
+            context.fillStyle = gradient; context.fillRect(0, 0, size, size);
+            return new THREE.CanvasTexture(canvas);
+        }
+
+        function setupParticleSystem() {
+            targetPositions = SHAPES.map(shape => shape.generator(CONFIG.particleCount, CONFIG.shapeSize));
+            particlesGeometry = new THREE.BufferGeometry();
+
+            currentPositions = new Float32Array(targetPositions[0]);
+            sourcePositions = new Float32Array(targetPositions[0]);
+            swarmPositions = new Float32Array(CONFIG.particleCount * 3);
+            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(currentPositions, 3));
+
+            particleSizes = new Float32Array(CONFIG.particleCount);
+            particleOpacities = new Float32Array(CONFIG.particleCount);
+            particleEffectStrengths = new Float32Array(CONFIG.particleCount);
+            for (let i = 0; i < CONFIG.particleCount; i++) {
+                particleSizes[i] = THREE.MathUtils.randFloat(CONFIG.particleSizeRange[0], CONFIG.particleSizeRange[1]);
+                particleOpacities[i] = 1.0;
+                particleEffectStrengths[i] = 0.0;
+            }
+            particlesGeometry.setAttribute('size', new THREE.BufferAttribute(particleSizes, 1));
+            particlesGeometry.setAttribute('opacity', new THREE.BufferAttribute(particleOpacities, 1));
+            particlesGeometry.setAttribute('aEffectStrength', new THREE.BufferAttribute(particleEffectStrengths, 1));
+
+            const colors = new Float32Array(CONFIG.particleCount * 3);
+            updateColorArray(colors, currentPositions);
+            particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+            particlesMaterial = new THREE.ShaderMaterial({
+                 uniforms: {
+                      pointTexture: { value: createStarTexture() }
+                 },
+                 vertexShader: `
+                      attribute float size;
+                      attribute float opacity;
+                      attribute float aEffectStrength;
+                      varying vec3 vColor;
+                      varying float vOpacity;
+                      varying float vEffectStrength;
+
+                      void main() {
+                           vColor = color;
+                           vOpacity = opacity;
+                           vEffectStrength = aEffectStrength;
+
+                           vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+
+                           float sizeScale = 1.0 - vEffectStrength * ${CONFIG.morphSizeFactor.toFixed(2)};
+                           gl_PointSize = size * sizeScale * (400.0 / -mvPosition.z);
+
+                           gl_Position = projectionMatrix * mvPosition;
+                      }
+                 `,
+                 fragmentShader: `
+                      uniform sampler2D pointTexture;
+                      varying vec3 vColor;
+                      varying float vOpacity;
+                      varying float vEffectStrength;
+
+                      void main() {
+                           float alpha = texture2D(pointTexture, gl_PointCoord).a;
+                           if (alpha < 0.05) discard;
+
+                           vec3 finalColor = vColor * (1.0 + vEffectStrength * ${CONFIG.morphBrightnessFactor.toFixed(2)});
+
+                           gl_FragColor = vec4(finalColor, alpha * vOpacity);
+                      }
+                 `,
+                 blending: THREE.AdditiveBlending,
+                 depthTest: true,
+                 depthWrite: false,
+                 transparent: true,
+                 vertexColors: true
+            });
+
+            particleSystem = new THREE.Points(particlesGeometry, particlesMaterial);
+            scene.add(particleSystem);
+        }
+
+        function updateColorArray(colors, positionsArray) {
+            const colorScheme = COLOR_SCHEMES[CONFIG.colorScheme];
+            const center = new THREE.Vector3(0, 0, 0);
+            const maxRadius = CONFIG.shapeSize * 1.1;
+            for (let i = 0; i < CONFIG.particleCount; i++) {
+                const i3 = i * 3;
+                tempVec.fromArray(positionsArray, i3);
+                const dist = tempVec.distanceTo(center);
+                let hue;
+                if (CONFIG.colorScheme === 'rainbow') {
+                    const normX = (tempVec.x / maxRadius + 1) / 2; const normY = (tempVec.y / maxRadius + 1) / 2; const normZ = (tempVec.z / maxRadius + 1) / 2;
+                    hue = (normX * 120 + normY * 120 + normZ * 120) % 360;
+                } else {
+                    hue = THREE.MathUtils.mapLinear( dist, 0, maxRadius, colorScheme.startHue, colorScheme.endHue );
+                }
+                const noiseValue = (noise3D(tempVec.x * 0.2, tempVec.y * 0.2, tempVec.z * 0.2) + 1) * 0.5;
+                const saturation = THREE.MathUtils.clamp(colorScheme.saturation * (0.9 + noiseValue * 0.2), 0, 1);
+                const lightness = THREE.MathUtils.clamp(colorScheme.lightness * (0.85 + noiseValue * 0.3), 0.1, 0.9);
+                const color = new THREE.Color().setHSL(hue / 360, saturation, lightness);
+                color.toArray(colors, i3);
+            }
+        }
+
+        function updateColors() {
+            const colors = particlesGeometry.attributes.color.array;
+            updateColorArray(colors, particlesGeometry.attributes.position.array);
+            particlesGeometry.attributes.color.needsUpdate = true;
+        }
+
+        function triggerMorph() {
+            if (isMorphing) return;
+            isMorphing = true; controls.autoRotate = false; console.log("Morphing triggered...");
+            sourcePositions.set(currentPositions);
+            const nextShapeIndex = (currentShapeIndex + 1) % SHAPES.length;
+            const nextTargetPositions = targetPositions[nextShapeIndex];
+            const centerOffsetAmount = CONFIG.shapeSize * CONFIG.swarmDistanceFactor;
+            for (let i = 0; i < CONFIG.particleCount; i++) {
+                const i3 = i * 3;
+                sourceVec.fromArray(sourcePositions, i3); targetVec.fromArray(nextTargetPositions, i3);
+                swarmVec.lerpVectors(sourceVec, targetVec, 0.5);
+                const offsetDir = tempVec.set( noise3D(i * 0.05, 10, 10), noise3D(20, i * 0.05, 20), noise3D(30, 30, i * 0.05) ).normalize();
+                const distFactor = sourceVec.distanceTo(targetVec) * 0.1 + centerOffsetAmount;
+                swarmVec.addScaledVector(offsetDir, distFactor * (0.5 + Math.random() * 0.8));
+                swarmPositions[i3] = swarmVec.x; swarmPositions[i3 + 1] = swarmVec.y; swarmPositions[i3 + 2] = swarmVec.z;
+            }
+            currentShapeIndex = nextShapeIndex;
+            morphState.progress = 0;
+            if (morphTimeline) morphTimeline.pause();
+            morphTimeline = anime({
+                 targets: morphState, progress: 1, duration: CONFIG.morphDuration, easing: 'cubicBezier(0.4, 0.0, 0.2, 1.0)',
+                 complete: () => {
+                     console.log("Morphing complete.");
+                     currentPositions.set(targetPositions[currentShapeIndex]);
+                     particlesGeometry.attributes.position.needsUpdate = true;
+                     particleEffectStrengths.fill(0.0);
+                     particlesGeometry.attributes.aEffectStrength.needsUpdate = true;
+                     sourcePositions.set(targetPositions[currentShapeIndex]);
+                     updateColors();
+                     isMorphing = false; controls.autoRotate = true;
+                 }
+            });
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            if (!isInitialized) return;
+            const elapsedTime = clock.getElapsedTime();
+            const deltaTime = clock.getDelta();
+            controls.update();
+            const positions = particlesGeometry.attributes.position.array;
+            const effectStrengths = particlesGeometry.attributes.aEffectStrength.array;
+
+            if (isMorphing) {
+                updateMorphAnimation(positions, effectStrengths, elapsedTime, deltaTime);
+            } else {
+                updateIdleAnimation(positions, effectStrengths, elapsedTime, deltaTime);
+            }
+            particlesGeometry.attributes.position.needsUpdate = true;
+            if (isMorphing || particlesGeometry.attributes.aEffectStrength.needsUpdate) {
+                 particlesGeometry.attributes.aEffectStrength.needsUpdate = true;
+            }
+            composer.render(deltaTime);
+        }
+
+        function updateMorphAnimation(positions, effectStrengths, elapsedTime, deltaTime) {
+            const t = morphState.progress;
+            const targets = targetPositions[currentShapeIndex];
+            const effectStrength = Math.sin(t * Math.PI);
+            const currentSwirl = effectStrength * CONFIG.swirlFactor * deltaTime * 50;
+            const currentNoise = effectStrength * CONFIG.noiseMaxStrength;
+
+            for (let i = 0; i < CONFIG.particleCount; i++) {
+                const i3 = i * 3;
+                sourceVec.fromArray(sourcePositions, i3);
+                swarmVec.fromArray(swarmPositions, i3);
+                targetVec.fromArray(targets, i3);
+
+                const t_inv = 1.0 - t; const t_inv_sq = t_inv * t_inv; const t_sq = t * t;
+                bezPos.copy(sourceVec).multiplyScalar(t_inv_sq);
+                bezPos.addScaledVector(swarmVec, 2.0 * t_inv * t);
+                bezPos.addScaledVector(targetVec, t_sq);
+
+                if (currentSwirl > 0.01) {
+                    tempVec.subVectors(bezPos, sourceVec);
+                    swirlAxis.set( noise3D(i * 0.02, elapsedTime * 0.1, 0), noise3D(0, i * 0.02, elapsedTime * 0.1 + 5), noise3D(elapsedTime * 0.1 + 10, 0, i * 0.02) ).normalize();
+                    tempVec.applyAxisAngle(swirlAxis, currentSwirl * (0.5 + Math.random() * 0.5));
+                    bezPos.copy(sourceVec).add(tempVec);
+                }
+
+                if (currentNoise > 0.01) {
+                    const noiseTime = elapsedTime * CONFIG.noiseTimeScale;
+                    noiseOffset.set( noise4D(bezPos.x * CONFIG.noiseFrequency, bezPos.y * CONFIG.noiseFrequency, bezPos.z * CONFIG.noiseFrequency, noiseTime), noise4D(bezPos.x * CONFIG.noiseFrequency + 100, bezPos.y * CONFIG.noiseFrequency + 100, bezPos.z * CONFIG.noiseFrequency + 100, noiseTime), noise4D(bezPos.x * CONFIG.noiseFrequency + 200, bezPos.y * CONFIG.noiseFrequency + 200, bezPos.z * CONFIG.noiseFrequency + 200, noiseTime) );
+                    bezPos.addScaledVector(noiseOffset, currentNoise);
+                }
+
+                positions[i3] = bezPos.x;
+                positions[i3 + 1] = bezPos.y;
+                positions[i3 + 2] = bezPos.z;
+
+                effectStrengths[i] = effectStrength;
+            }
+             particlesGeometry.attributes.aEffectStrength.needsUpdate = true;
+        }
+
+        function updateIdleAnimation(positions, effectStrengths, elapsedTime, deltaTime) {
+            const breathScale = 1.0 + Math.sin(elapsedTime * 0.5) * 0.015;
+            const timeScaled = elapsedTime * CONFIG.idleFlowSpeed;
+            const freq = 0.1;
+
+            let needsEffectStrengthReset = false;
+
+            for (let i = 0; i < CONFIG.particleCount; i++) {
+                const i3 = i * 3;
+                sourceVec.fromArray(sourcePositions, i3);
+                tempVec.copy(sourceVec).multiplyScalar(breathScale);
+                flowVec.set( noise4D(tempVec.x * freq, tempVec.y * freq, tempVec.z * freq, timeScaled), noise4D(tempVec.x * freq + 10, tempVec.y * freq + 10, tempVec.z * freq + 10, timeScaled), noise4D(tempVec.x * freq + 20, tempVec.y * freq + 20, tempVec.z * freq + 20, timeScaled) );
+                tempVec.addScaledVector(flowVec, CONFIG.idleFlowStrength);
+                currentVec.fromArray(positions, i3);
+                currentVec.lerp(tempVec, 0.05);
+                positions[i3] = currentVec.x;
+                positions[i3 + 1] = currentVec.y;
+                positions[i3 + 2] = currentVec.z;
+
+                if (effectStrengths[i] !== 0.0) {
+                    effectStrengths[i] = 0.0;
+                    needsEffectStrengthReset = true;
+                }
+            }
+             if (needsEffectStrengthReset) {
+                 particlesGeometry.attributes.aEffectStrength.needsUpdate = true;
+             }
+        }
+
+        // Scroll to next section function
+        function scrollToNext() {
+            const nextSection = document.querySelector('section:nth-of-type(2)');
+            if (nextSection) {
+                nextSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+        
+        // Hide/show elements when not in hero section
+        function handleScrollElements() {
+            const heroSection = document.querySelector('section:first-of-type');
+            const scrollIndicator = document.getElementById('scroll-indicator');
+            const particleControls = document.getElementById('particle-controls');
+            const heroRect = heroSection.getBoundingClientRect();
+            
+            if (heroRect.bottom <= 100) {
+                // Hide scroll indicator when past hero section
+                scrollIndicator.style.opacity = '0';
+                scrollIndicator.style.pointerEvents = 'none';
+                // Make particle controls more subtle
+                particleControls.style.opacity = '0.3';
+                particleControls.style.transform = 'translateX(-50%) scale(0.8)';
+            } else {
+                // Show elements in hero section
+                scrollIndicator.style.opacity = '1';
+                scrollIndicator.style.pointerEvents = 'all';
+                particleControls.style.opacity = '1';
+                particleControls.style.transform = 'translateX(-50%) scale(1)';
+            }
+        }
+        
+        // Make functions globally available
+        window.scrollToNext = scrollToNext;
+        window.addEventListener('scroll', handleScrollElements);
+        window.addEventListener('load', handleScrollElements);
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            composer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        // Initialize particle system when page loads
+        window.addEventListener('load', () => {
+            setTimeout(init, 500);
+        });
+    </script>
+
+</body>
+</html>
