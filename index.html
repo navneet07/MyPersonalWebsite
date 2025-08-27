@@ -227,105 +227,7 @@
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
         }
         
-        /* Floating Scroll Button - Flows with Page Content */
-        #scroll-indicator {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            z-index: 1000;
-            background: rgba(255, 255, 255, 0.15);
-            border: 2px solid rgba(255, 255, 255, 0.4);
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            animation: bounce 2s infinite;
-            opacity: 0.9;
-            pointer-events: all;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        }
-        
-        #scroll-indicator:hover {
-            background: rgba(255, 255, 255, 0.3);
-            border-color: rgba(255, 255, 255, 0.8);
-            transform: scale(1.15);
-            box-shadow: 0 6px 25px rgba(255, 255, 255, 0.2);
-            animation: none; /* Stop bounce on hover */
-        }
-        
-        /* Enhanced visibility for scroll button */
-        #scroll-indicator:active {
-            transform: scale(0.95);
-            background: rgba(255, 255, 255, 0.4);
-        }
-        
-        #scroll-indicator svg {
-            width: 24px;
-            height: 24px;
-            fill: white;
-            filter: drop-shadow(0 0 3px rgba(0,0,0,0.3));
-        }
 
-        /* Scroll Progress Indicator */
-        #scroll-progress-container {
-            position: fixed;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 1000;
-            height: 200px;
-            width: 4px;
-            pointer-events: all;
-        }
-
-        #scroll-track {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 2px;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            cursor: pointer;
-        }
-
-        #scroll-thumb {
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 50%;
-            left: -4px;
-            top: 0;
-            cursor: grab;
-            transition: all 0.1s ease;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-        }
-
-        #scroll-thumb:hover {
-            background: rgba(255, 255, 255, 1);
-            transform: scale(1.2);
-            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.4);
-        }
-
-        #scroll-thumb:active {
-            cursor: grabbing;
-            transform: scale(1.1);
-        }
-
-        #scroll-track:hover {
-            background: rgba(255, 255, 255, 0.3);
-            width: 6px;
-            left: -1px;
-        }
         
         @keyframes bounce {
             0%, 20%, 50%, 80%, 100% {
@@ -1043,18 +945,7 @@
         });
     </script>
     
-    <!-- Scroll Progress Indicator -->
-    <div id="scroll-progress-container">
-        <div id="scroll-track"></div>
-        <div id="scroll-thumb"></div>
-    </div>
 
-    <!-- Floating Scroll Button - Moves with Page -->
-    <div id="scroll-indicator" onclick="scrollToNext()">
-        <svg viewBox="0 0 24 24">
-            <path d="M7.41 8.58L12 13.17l4.59-4.59L18 10l-6 6-6-6 1.41-1.42z"/>
-        </svg>
-    </div>
     
     <!-- Particle System Script -->
     <script type="module">
@@ -1279,6 +1170,8 @@
             controls.enableDamping = true; controls.dampingFactor = 0.05;
             controls.minDistance = 5; controls.maxDistance = 80;
             controls.autoRotate = true; controls.autoRotateSpeed = 0.3;
+            // Disable zoom/scroll wheel to prevent interference with page scrolling
+            controls.enableZoom = false;
             updateProgress(5);
 
             scene.add(new THREE.AmbientLight(0x404060));
@@ -1591,166 +1484,11 @@
              }
         }
 
-        // Scroll to next section function - works for all sections
-        function scrollToNext() {
-            const sections = document.querySelectorAll('section');
-            const scrollPosition = window.scrollY + window.innerHeight / 2;
-            
-            // Find current section
-            let currentSectionIndex = 0;
-            for (let i = 0; i < sections.length; i++) {
-                const sectionTop = sections[i].offsetTop;
-                const sectionBottom = sectionTop + sections[i].offsetHeight;
-                if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
-                    currentSectionIndex = i;
-                    break;
-                }
-            }
-            
-            // Scroll to next section
-            const nextIndex = currentSectionIndex + 1;
-            if (nextIndex < sections.length) {
-                sections[nextIndex].scrollIntoView({ behavior: 'smooth' });
-            } else {
-                // If at last section, scroll to top
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-        }
+
         
-        // Update scroll indicator based on page position
-        function handleScrollElements() {
-            const heroSection = document.querySelector('section:first-of-type');
-            const scrollIndicator = document.getElementById('scroll-indicator');
-            const particleControls = document.getElementById('particle-controls');
-            const heroRect = heroSection.getBoundingClientRect();
-            const sections = document.querySelectorAll('section');
-            const lastSection = sections[sections.length - 1];
-            const lastSectionRect = lastSection.getBoundingClientRect();
-            
-            // Keep scroll indicator visible throughout the page
-            scrollIndicator.style.opacity = '1';
-            scrollIndicator.style.pointerEvents = 'all';
-            
-            // Update scroll indicator icon based on position
-            const scrollIcon = scrollIndicator.querySelector('svg path');
-            if (lastSectionRect.bottom <= window.innerHeight + 100) {
-                // At bottom of page - show up arrow (scroll to top)
-                scrollIcon.setAttribute('d', 'M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z');
-                scrollIndicator.title = 'Back to top';
-            } else {
-                // Not at bottom - show down arrow (scroll to next)
-                scrollIcon.setAttribute('d', 'M7.41 8.58L12 13.17l4.59-4.59L18 10l-6 6-6-6 1.41-1.42z');
-                scrollIndicator.title = 'Next section';
-            }
-            
-            if (heroRect.bottom <= 100) {
-                // Make particle controls more subtle when past hero section
-                particleControls.style.opacity = '0.3';
-                particleControls.style.transform = 'translateX(-50%) scale(0.8)';
-            } else {
-                // Show particle controls normally in hero section
-                particleControls.style.opacity = '1';
-                particleControls.style.transform = 'translateX(-50%) scale(1)';
-            }
-        }
+
         
-        // Scroll Progress Indicator Functions
-        function updateScrollProgress() {
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-            const scrollProgress = Math.min(scrollTop / scrollHeight, 1);
-            
-            const thumb = document.getElementById('scroll-thumb');
-            const track = document.getElementById('scroll-track');
-            
-            if (thumb && track) {
-                const trackHeight = track.offsetHeight;
-                const thumbPosition = scrollProgress * (trackHeight - 12); // 12 is thumb height
-                thumb.style.top = thumbPosition + 'px';
-            }
-        }
-        
-        function setupScrollProgressInteraction() {
-            const track = document.getElementById('scroll-track');
-            const thumb = document.getElementById('scroll-thumb');
-            let isDragging = false;
-            
-            // Click on track to jump to position
-            track.addEventListener('click', (e) => {
-                if (e.target === thumb) return;
-                
-                const rect = track.getBoundingClientRect();
-                const clickY = e.clientY - rect.top;
-                const trackHeight = rect.height;
-                const progress = Math.max(0, Math.min(1, clickY / trackHeight));
-                
-                const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-                const targetScroll = progress * scrollHeight;
-                
-                window.scrollTo({
-                    top: targetScroll,
-                    behavior: 'smooth'
-                });
-            });
-            
-            // Drag functionality
-            function startDrag(e) {
-                isDragging = true;
-                document.body.style.userSelect = 'none';
-                e.preventDefault();
-            }
-            
-            function stopDrag() {
-                isDragging = false;
-                document.body.style.userSelect = '';
-            }
-            
-            function handleDrag(e) {
-                if (!isDragging) return;
-                e.preventDefault();
-                
-                const rect = track.getBoundingClientRect();
-                const dragY = e.clientY - rect.top;
-                const trackHeight = rect.height;
-                const progress = Math.max(0, Math.min(1, dragY / trackHeight));
-                
-                const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-                const targetScroll = progress * scrollHeight;
-                
-                window.scrollTo({
-                    top: targetScroll,
-                    behavior: 'auto'
-                });
-            }
-            
-            // Mouse events
-            thumb.addEventListener('mousedown', startDrag);
-            document.addEventListener('mouseup', stopDrag);
-            document.addEventListener('mousemove', handleDrag);
-            
-            // Touch events for mobile
-            thumb.addEventListener('touchstart', (e) => {
-                startDrag(e.touches[0]);
-            });
-            
-            document.addEventListener('touchend', stopDrag);
-            
-            document.addEventListener('touchmove', (e) => {
-                if (isDragging) {
-                    handleDrag(e.touches[0]);
-                }
-            });
-        }
-        
-        // Make functions globally available
-        window.scrollToNext = scrollToNext;
-        window.addEventListener('scroll', handleScrollElements);
-        window.addEventListener('scroll', updateScrollProgress);
-        window.addEventListener('load', handleScrollElements);
-        window.addEventListener('load', () => {
-            updateScrollProgress();
-            setupScrollProgressInteraction();
-        });
+
 
         function onCanvasClick(event) {
             if (event.target.closest('#particle-controls')) { return; }
