@@ -271,6 +271,61 @@
             fill: white;
             filter: drop-shadow(0 0 3px rgba(0,0,0,0.3));
         }
+
+        /* Scroll Progress Indicator */
+        #scroll-progress-container {
+            position: fixed;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1000;
+            height: 200px;
+            width: 4px;
+            pointer-events: all;
+        }
+
+        #scroll-track {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+        }
+
+        #scroll-thumb {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            left: -4px;
+            top: 0;
+            cursor: grab;
+            transition: all 0.1s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        #scroll-thumb:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: scale(1.2);
+            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.4);
+        }
+
+        #scroll-thumb:active {
+            cursor: grabbing;
+            transform: scale(1.1);
+        }
+
+        #scroll-track:hover {
+            background: rgba(255, 255, 255, 0.3);
+            width: 6px;
+            left: -1px;
+        }
         
         @keyframes bounce {
             0%, 20%, 50%, 80%, 100% {
@@ -988,6 +1043,12 @@
         });
     </script>
     
+    <!-- Scroll Progress Indicator -->
+    <div id="scroll-progress-container">
+        <div id="scroll-track"></div>
+        <div id="scroll-thumb"></div>
+    </div>
+
     <!-- Floating Scroll Button - Moves with Page -->
     <div id="scroll-indicator" onclick="scrollToNext()">
         <svg viewBox="0 0 24 24">
@@ -1593,10 +1654,103 @@
             }
         }
         
+        // Scroll Progress Indicator Functions
+        function updateScrollProgress() {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollProgress = Math.min(scrollTop / scrollHeight, 1);
+            
+            const thumb = document.getElementById('scroll-thumb');
+            const track = document.getElementById('scroll-track');
+            
+            if (thumb && track) {
+                const trackHeight = track.offsetHeight;
+                const thumbPosition = scrollProgress * (trackHeight - 12); // 12 is thumb height
+                thumb.style.top = thumbPosition + 'px';
+            }
+        }
+        
+        function setupScrollProgressInteraction() {
+            const track = document.getElementById('scroll-track');
+            const thumb = document.getElementById('scroll-thumb');
+            let isDragging = false;
+            
+            // Click on track to jump to position
+            track.addEventListener('click', (e) => {
+                if (e.target === thumb) return;
+                
+                const rect = track.getBoundingClientRect();
+                const clickY = e.clientY - rect.top;
+                const trackHeight = rect.height;
+                const progress = Math.max(0, Math.min(1, clickY / trackHeight));
+                
+                const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+                const targetScroll = progress * scrollHeight;
+                
+                window.scrollTo({
+                    top: targetScroll,
+                    behavior: 'smooth'
+                });
+            });
+            
+            // Drag functionality
+            function startDrag(e) {
+                isDragging = true;
+                document.body.style.userSelect = 'none';
+                e.preventDefault();
+            }
+            
+            function stopDrag() {
+                isDragging = false;
+                document.body.style.userSelect = '';
+            }
+            
+            function handleDrag(e) {
+                if (!isDragging) return;
+                e.preventDefault();
+                
+                const rect = track.getBoundingClientRect();
+                const dragY = e.clientY - rect.top;
+                const trackHeight = rect.height;
+                const progress = Math.max(0, Math.min(1, dragY / trackHeight));
+                
+                const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+                const targetScroll = progress * scrollHeight;
+                
+                window.scrollTo({
+                    top: targetScroll,
+                    behavior: 'auto'
+                });
+            }
+            
+            // Mouse events
+            thumb.addEventListener('mousedown', startDrag);
+            document.addEventListener('mouseup', stopDrag);
+            document.addEventListener('mousemove', handleDrag);
+            
+            // Touch events for mobile
+            thumb.addEventListener('touchstart', (e) => {
+                startDrag(e.touches[0]);
+            });
+            
+            document.addEventListener('touchend', stopDrag);
+            
+            document.addEventListener('touchmove', (e) => {
+                if (isDragging) {
+                    handleDrag(e.touches[0]);
+                }
+            });
+        }
+        
         // Make functions globally available
         window.scrollToNext = scrollToNext;
         window.addEventListener('scroll', handleScrollElements);
+        window.addEventListener('scroll', updateScrollProgress);
         window.addEventListener('load', handleScrollElements);
+        window.addEventListener('load', () => {
+            updateScrollProgress();
+            setupScrollProgressInteraction();
+        });
 
         function onCanvasClick(event) {
             if (event.target.closest('#particle-controls')) { return; }
