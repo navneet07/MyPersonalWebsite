@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Me - Navneet</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Alpine.js CDN -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <!-- GSAP CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/MotionPathPlugin.min.js"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Three.js Import Map -->
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.163.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.163.0/examples/jsm/",
+          "animejs": "https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.es.js",
+          "simplex-noise": "https://cdn.skypack.dev/simplex-noise@4.0.1"
+        }
+      }
+    </script>
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* Custom Tailwind color extensions */
+        .bg-grey-100 { background-color: #f8fafc; }
+        .bg-grey-50 { background-color: #f8fafc; }
+        .bg-grey-900 { background-color: #111827; }
+        .bg-grey-600 { background-color: #4b5563; }
+        .text-grey-900 { color: #111827; }
+        .text-grey-600 { color: #4b5563; }
+        .text-grey-700 { color: #374151; }
+        .text-grey-500 { color: #6b7280; }
+        .text-grey-400 { color: #9ca3af; }
+        .text-grey-300 { color: #d1d5db; }
+        .border-grey-100 { border-color: #f3f4f6; }
+        .border-grey-800 { border-color: #1f2937; }
+
+        /* Alpine.js collapse animation */
+        [x-cloak] { display: none !important; }
+        
+        /* Flip Button Navigation Styles */
+        .flip-button-nav {
+          --shadow-color: 0deg 0% 63%;
+          --primary: light-dark(hsl(0 0% 10%), #fff);
+          --secondary: canvas;
+          --inactive: light-dark(hsl(0 0% 60%), hsl(0 0% 50%));
+          --duration: 0.22;
+          --drop-off: 0.4;
+          --ease: linear(
+            0 0%, 0.2342 12.49%, 0.4374 24.99%,
+            0.6093 37.49%, 0.6835 43.74%,
+            0.7499 49.99%, 0.8086 56.25%,
+            0.8593 62.5%, 0.9023 68.75%, 0.9375 75%,
+            0.9648 81.25%, 0.9844 87.5%,
+            0.9961 93.75%, 1 100%
+          );
+          --border: light-dark(hsl(0 0% 80%), hsl(0 0% 60%));
+        }
+        
+        .flip-button-nav .premium:has(:checked)::before {
+          translate: -50% -250%;
+          scale: 0.85;
+        }
+        .flip-button-nav .premium:has(:checked) label span {
+          scale: 1;
+        }
+        .flip-button-nav .premium:has(:checked) .indicator {
+          background: var(--secondary);
+          clip-path: inset(0 0 0 0 round 100px);
+        }
+        .flip-button-nav .premium:has(:checked) label {
+          color: var(--inactive);
+          opacity: 0.75;
+        }
+        
+        .flip-button-nav .premium:has(:nth-of-type(1):checked) label:nth-of-type(1),
+        .flip-button-nav .premium:has(:nth-of-type(2):checked) label:nth-of-type(2) {
+          color: var(--primary);
+          opacity: 1;
+        }
+        .flip-button-nav .premium:has(:nth-of-type(1):checked) .indicator {
+          translate: -100% 0;
+        }
+        .flip-button-nav .premium:has(:nth-of-type(2):checked) .indicator {
+          translate: 0 0;
+        }
+
+        .flip-button-nav .control label {
+          transition-property: color, opacity;
+          transition-duration: calc(var(--duration) * 1s);
+          transition-timing-function: var(--ease);
+        }
+
+        .flip-button-nav .control__track:not(:has(> :checked)) > label {
+          color: var(--primary);
+          opacity: var(--drop-off);
+        }
+        .flip-button-nav .control__track:not(:has(> :checked)) > .indicator {
+          translate: 100% 0;
+        }
+        .flip-button-nav .indicator {
+          transition: translate calc(var(--duration) * 1s) var(--ease);
+        }
+        .flip-button-nav .premium .indicator {
+          transition-property: translate, clip-path, background;
+          transition-duration: calc(var(--duration) * 1s);
+          transition-timing-function: var(--ease);
+          clip-path: inset(
+            73cqh calc(50% + 1px) calc(27cqh - 2px) calc(50% - 3px) round 100px
+          );
+        }
+        .flip-button-nav .premium::before {
+          transition-property: scale, translate;
+          transition-duration: calc(var(--duration) * 1s);
+          transition-timing-function: var(--ease);
+        }
+        .flip-button-nav .control__track:has(> :checked) .premium .indicator {
+          background: var(--inactive);
+        }
+        .flip-button-nav .control__track:has(> :checked) .premium label {
+          color: var(--inactive);
+        }
+
+        .flip-button-nav .indicator {
+          position: absolute;
+          width: 50%;
+          left: 0;
+          top: 0;
+          bottom: 0;
+          background: var(--primary);
+          border-radius: 100px;
+        }
+
+        .flip-button-nav .premium .indicator {
+          background: var(--primary);
+          left: 50%;
+          top: 0;
+          translate: -50% 0;
+        }
+
+        .flip-button-nav .control {
+          scale: 1;
+          letter-spacing: 0.5px;
+          position: relative;
+          width: 280px;
+          height: 42px;
+          aspect-ratio: 300 / 42;
+          background: white;
+          border-radius: 100px;
+          border: 1px solid #e5e7eb;
+          padding: 3px;
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .flip-button-nav .control__track {
+          display: grid;
+          place-items: center;
+          grid-template-columns: repeat(4, 1fr);
+          width: 100%;
+          height: 100%;
+          position: relative;
+        }
+
+        .flip-button-nav .premium::before {
+          content: 'About Me';
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          translate: -50% -80%;
+          color: #1f2937;
+          font-size: 0.75rem;
+          z-index: 2;
+          font-weight: 500;
+        }
+
+        .flip-button-nav label {
+          display: inline-block;
+          height: 100%;
+          width: 100%;
+          display: grid;
+          place-items: center;
+          cursor: pointer;
+          font-size: 0.875rem;
+          color: #1f2937;
+          z-index: 2;
+          font-weight: 500;
+        }
+
+        .flip-button-nav .control__track > label {
+          color: white;
+        }
+
+        .flip-button-nav .premium {
+          width: 100%;
+          height: 100%;
+          display: grid;
+          position: relative;
+          grid-template-columns: 1fr 1fr;
+          border: 1px solid #0000;
+          container-type: size;
+        }
+
+        .flip-button-nav .premium,
+        .flip-button-nav .control__track > label:nth-of-type(1) {
+          grid-column: span 2;
+        }
+
+        .flip-button-nav label span {
+          display: grid;
+          place-items: center;
+          height: 100%;
+          width: 100%;
+          transition: scale calc(var(--duration) * 1s) var(--ease);
+        }
+
+        .flip-button-nav .premium label:nth-of-type(1) span {
+          scale: 0.75;
+          opacity: 1;
+          transform-origin: 150% 150%;
+          border-radius: 100px;
+          transition: scale calc(var(--duration) * 1s) var(--ease), opacity calc(var(--duration) * 1s) var(--ease);
+        }
+        .flip-button-nav .premium label:nth-of-type(2) span {
+          scale: 0.75;
+          opacity: 1;
+          transform-origin: -65% 150%;
+          border-radius: 100px;
+          transition: scale calc(var(--duration) * 1s) var(--ease), opacity calc(var(--duration) * 1s) var(--ease);
+        }
+
+        .flip-button-nav .sr-only {
+          position: absolute;
+          width: 1px;
+          height: 1px;
+          padding: 0;
+          margin: -1px;
+          overflow: hidden;
+          clip: rect(0, 0, 0, 0);
+          white-space: nowrap;
+          border-width: 0;
+        }
+        
+        /* Particle System Styles */
+        #webglCanvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            pointer-events: auto;
+        }
+        
+        main, section, .content-scrollable {
+            pointer-events: none;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .content-scrollable > *, 
+        .content-scrollable h1, .content-scrollable h2, .content-scrollable h3,
+        .content-scrollable p, .content-scrollable div, .content-scrollable button,
+        .content-scrollable a, .content-scrollable img, .content-scrollable nav,
+        .content-scrollable ul, .content-scrollable li {
+            pointer-events: auto;
+        }
+
+        #particle-loading {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.6s ease-out;
+            color: white;
+            font-family: 'Courier New', monospace;
+        }
+        
+        #particle-loading span {
+            font-size: 24px;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+        }
+        
+        #progress-container {
+            width: 60%;
+            max-width: 300px;
+            height: 6px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        #progress {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #00a2ff, #00ffea);
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+        
+        /* Color Picker Panel Styles */
+        .color-option {
+            box-shadow: inset 0 0 4px rgba(0,0,0,0.4);
+        }
+        
+        .color-option.active {
+            border-color: white !important;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.8), inset 0 0 4px rgba(0,0,0,0.4);
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="bg-grey-100 scroll-smooth" data-barba="wrapper" x-data="">
+
+    <!-- Navigation -->
+    <div class="fixed top-0 w-full z-50 transition-all duration-300 bg-transparent"
+         x-data="{ 
+        isMobileMenuOpen: false,
+        isMegaMenuOpen: false,
+        currentMegaMenu: null,
+        isScrolled: false
+    }"
+         x-init="
+        window.addEventListener('scroll', () => {
+            isScrolled = window.scrollY > 50;
+        });
+    ">
+
+        <div class="container mx-auto px-4 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+
+                <div class="flex items-center space-x-2">
+                    <a href="index.html" class="flex items-center space-x-3" aria-label="NG Homepage">
+                        <!-- Orange Circle Logo with NG -->
+                        <div class="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center">
+                            <span class="text-black font-bold text-sm">NG</span>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Flip Button Navigation -->
+                <div class="hidden lg:flex items-center">
+                    <div class="flip-button-nav">
+                        <div class="control" x-data="{ 
+                            currentSelection: 'home',
+                            navigate(selection) {
+                                this.currentSelection = selection;
+                                switch(selection) {
+                                    case 'home':
+                                        window.location.href = 'index.html';
+                                        break;
+                                    case 'projects': 
+                                        window.location.href = 'projects.html';
+                                        break;
+                                    case 'hobbies':
+                                        window.location.href = 'hobbies-blank.html';
+                                        break;
+                                }
+                            }
+                        }">
+                            <div class="control__track">
+                                <div class="indicator"></div>
+                                <label for="free" @click="navigate('home')">Home</label>
+                                <input class="sr-only" type="radio" name="tier" id="free" />
+                                <div class="premium">
+                                    <div class="indicator"></div>
+                                    <label for="solo" @click="navigate('projects')">
+                                        <span>Projects</span>
+                                    </label>
+                                    <input class="sr-only" type="radio" name="tier" id="solo" checked />
+                                    <label for="team" @click="navigate('hobbies')">
+                                        <span>Hobbies</span>
+                                    </label>
+                                    <input class="sr-only" type="radio" name="tier" id="team" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hidden lg:flex items-center space-x-4">
+                    <a href="#"
+                       class="px-6 py-3 bg-grey-400 text-white rounded-full font-medium cursor-not-allowed">
+                        Contact (Coming Soon)
+                    </a>
+                </div>
+
+                <button @click="isMobileMenuOpen = !isMobileMenuOpen"
+                        class="lg:hidden flex flex-col justify-center items-center w-8 h-8 space-y-1">
+                    <span class="w-6 h-0.5 bg-grey-600 transition-transform duration-300"
+                          :class="{ 'rotate-45 translate-y-2': isMobileMenuOpen }"></span>
+                    <span class="w-6 h-0.5 bg-grey-600 transition-opacity duration-300"
+                          :class="{ 'opacity-0': isMobileMenuOpen }"></span>
+                    <span class="w-6 h-0.5 bg-grey-600 transition-transform duration-300"
+                          :class="{ '-rotate-45 -translate-y-2': isMobileMenuOpen }"></span>
+                </button>
+            </div>
+
+            <!-- Mobile Navigation -->
+            <div x-show="isMobileMenuOpen" x-collapse class="lg:hidden bg-white rounded-2xl mt-4 shadow-lg border border-grey-100">
+                <div class="px-6 py-6">
+                    <div class="flip-button-nav">
+                        <div class="control" x-data="{ 
+                            currentSelection: 'home',
+                            navigate(selection) {
+                                this.currentSelection = selection;
+                                isMobileMenuOpen = false;
+                                
+                                switch(selection) {
+                                    case 'home':
+                                        window.location.href = 'index.html';
+                                        break;
+                                    case 'projects': 
+                                        window.location.href = 'projects.html';
+                                        break;
+                                    case 'hobbies':
+                                        window.location.href = 'hobbies-blank.html';
+                                        break;
+                                }
+                            }
+                        }" style="scale: 0.9;">
+                            <div class="control__track">
+                                <div class="indicator"></div>
+                                <label for="free-mobile" @click="navigate('home')">Home</label>
+                                <input class="sr-only" type="radio" name="tier-mobile" id="free-mobile" />
+                                <div class="premium">
+                                    <div class="indicator"></div>
+                                    <label for="solo-mobile" @click="navigate('projects')">
+                                        <span>Projects</span>
+                                    </label>
+                                    <input class="sr-only" type="radio" name="tier-mobile" id="solo-mobile" checked />
+                                    <label for="team-mobile" @click="navigate('hobbies')">
+                                        <span>Hobbies</span>
+                                    </label>
+                                    <input class="sr-only" type="radio" name="tier-mobile" id="team-mobile" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Global WebGL Particle Background -->
+    <canvas id="webglCanvas" class="fixed inset-0 w-full h-full"></canvas>
+    
+    <!-- Color Picker Panel - Center Right -->
+    <div class="fixed right-6 top-1/2 transform -translate-y-1/2 z-50 pointer-events-auto">
+        <div class="bg-black/90 backdrop-blur-sm rounded-xl border border-white/20 shadow-2xl p-2.5">
+            <div class="flex flex-col gap-2.5">
+                <div class="color-option active w-8 h-8 rounded-full border-2 border-white/30 cursor-pointer transition-all hover:scale-110 hover:border-white/70 hover:shadow-lg" 
+                     data-scheme="fire" 
+                     style="background: linear-gradient(to bottom right, #ff4500, #ffcc00)"></div>
+                <div class="color-option w-8 h-8 rounded-full border-2 border-white/30 cursor-pointer transition-all hover:scale-110 hover:border-white/70 hover:shadow-lg" 
+                     data-scheme="neon" 
+                     style="background: linear-gradient(to bottom right, #ff00ff, #00ffff)"></div>
+                <div class="color-option w-8 h-8 rounded-full border-2 border-white/30 cursor-pointer transition-all hover:scale-110 hover:border-white/70 hover:shadow-lg" 
+                     data-scheme="nature" 
+                     style="background: linear-gradient(to bottom right, #00ff00, #66ffcc)"></div>
+                <div class="color-option w-8 h-8 rounded-full border-2 border-white/30 cursor-pointer transition-all hover:scale-110 hover:border-white/70 hover:shadow-lg" 
+                     data-scheme="rainbow" 
+                     style="background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet)"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content Area -->
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden z-10 content-scrollable">
+        
+        <!-- Particle Loading Screen -->
+        <div id="particle-loading">
+            <span>Initializing Particles...</span>
+            <div id="progress-container">
+                <div id="progress"></div>
+            </div>
+        </div>
+        
+        <!-- About Me Content Goes Here -->
+        <div class="relative z-30 text-center text-white px-4 max-w-6xl mx-auto" style="text-shadow: 0 0 20px rgba(0,0,0,0.8), 0 2px 4px rgba(0,0,0,0.6);">
+            <h1 class="text-4xl md:text-6xl font-bold mb-8">About Me</h1>
+            <p class="text-xl opacity-75">Content coming soon...</p>
+        </div>
+        
+    </section>
+
+    <!-- Particle System Script -->
+    <script type="module" src="particle-system.js"></script>
+
+</body>
+</html>

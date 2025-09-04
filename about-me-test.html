@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Me - Navneet | Test Version</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Alpine.js CDN -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <!-- GSAP CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <!-- JointJS for Interactive Milestones -->
+    <script src="https://cdn.jsdelivr.net/npm/jointjs@3.7.5/dist/joint.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jointjs@3.7.5/dist/joint.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rosario:ital,wght@0,300..700;1,300..700&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Proza+Libre:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* Custom Tailwind color extensions */
+        .bg-grey-100 { background-color: #f8fafc; }
+        .bg-grey-50 { background-color: #f8fafc; }
+        .bg-grey-900 { background-color: #111827; }
+        .bg-grey-600 { background-color: #4b5563; }
+        .text-grey-900 { color: #111827; }
+        .text-grey-600 { color: #4b5563; }
+        .text-grey-700 { color: #374151; }
+        .text-grey-500 { color: #6b7280; }
+        .text-grey-400 { color: #9ca3af; }
+        .text-grey-300 { color: #d1d5db; }
+        .border-grey-100 { border-color: #f3f4f6; }
+        .border-grey-800 { border-color: #1f2937; }
+        
+        /* Custom animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        .animate-float { animation: float 3s ease-in-out infinite; }
+        
+        /* Custom scrollbar styling */
+        .scrollbar-thin {
+            scrollbar-width: thin;
+        }
+        .scrollbar-thin::-webkit-scrollbar {
+            width: 8px;
+        }
+        .scrollbar-thin::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+            background-color: #f97316;
+            border-radius: 9999px;
+            border: 2px solid transparent;
+        }
+        .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+            background-color: #ea580c;
+        }
+        
+        /* Timeline Styles */
+        .timeline {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            background: linear-gradient(180deg, #00d4ff, #ff6b6b, #4ecdc4);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -2px;
+            border-radius: 2px;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+        
+        .timeline-item {
+            position: relative;
+            background-color: transparent;
+            width: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .timeline-item:hover {
+            transform: scale(1.02);
+        }
+        
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            right: -10px;
+            background: var(--timeline-color, #00d4ff);
+            border: 4px solid #1f2937;
+            top: 20px;
+            border-radius: 50%;
+            z-index: 1;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+        }
+        
+        .timeline-item:hover::after {
+            transform: scale(1.2);
+            box-shadow: 0 0 25px rgba(0, 212, 255, 0.8);
+        }
+        
+        .timeline-item.left {
+            left: 0;
+        }
+        
+        .timeline-item.right {
+            left: 50%;
+        }
+        
+        .timeline-item.right::after {
+            left: -10px;
+        }
+        
+        .timeline-content {
+            padding: 20px 30px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            position: relative;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .timeline-item:hover .timeline-content {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--timeline-color, #00d4ff);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        }
+        
+        .timeline-content::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            width: 0;
+            height: 0;
+            border: 10px solid transparent;
+        }
+        
+        .timeline-item.left .timeline-content::before {
+            right: -20px;
+            border-left-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .timeline-item.right .timeline-content::before {
+            left: -20px;
+            border-right-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Work Experience Timeline Colors */
+        .timeline-item.work {
+            --timeline-color: #00d4ff;
+        }
+        
+        .timeline-item.education {
+            --timeline-color: #ff6b6b;
+        }
+        
+        .timeline-item.certification {
+            --timeline-color: #4ecdc4;
+        }
+        
+        /* Timeline responsive */
+        @media screen and (max-width: 768px) {
+            .timeline::after {
+                left: 31px;
+            }
+            
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+            
+            .timeline-item.left, .timeline-item.right {
+                left: 0%;
+            }
+            
+            .timeline-item::after {
+                left: 21px;
+            }
+            
+            .timeline-content::before {
+                left: -15px;
+                border-right-color: rgba(255, 255, 255, 0.1);
+                border-left: 0;
+            }
+            
+            .timeline-item.right .timeline-content::before {
+                left: -15px;
+                border-right-color: rgba(255, 255, 255, 0.1);
+                border-left: 0;
+            }
+        }
+        
+        /* Card animations */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .slide-in-up {
+            animation: slideInUp 0.6s ease-out forwards;
+        }
+        
+        /* Glow effects for cards */
+        .glow-card {
+            position: relative;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .glow-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Modal styles */
+        .modal-backdrop {
+            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.8);
+        }
+        
+        .modal-content {
+            background: rgba(31, 41, 55, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Alpine.js collapse animation */
+        [x-cloak] { display: none !important; }
+        
+        /* Interactive Milestone Timeline Styles */
+        #milestone-container {
+            position: relative;
+            width: 100%;
+            height: 600px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        #paper-container {
+            position: absolute;
+            right: 0;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            overflow: hidden;
+        }
+        
+        .milestone-header {
+            position: absolute;
+            top: 20px;
+            left: 30px;
+            z-index: 10;
+            pointer-events: none;
+        }
+        
+        .milestone-instructions {
+            position: absolute;
+            bottom: 20px;
+            left: 30px;
+            z-index: 10;
+            pointer-events: none;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-grey-900 text-white min-h-screen">
+    
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 bg-grey-900/80 backdrop-blur-sm border-b border-grey-800" x-data="{ isOpen: false }">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <h1 class="text-2xl font-bold text-orange-500">About Me - Test</h1>
+                <div class="flex items-center space-x-6">
+                    <a href="index.html" class="text-grey-300 hover:text-white transition-colors">← Back to Home</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-24 pb-16">
+        
+        <!-- Hero Section -->
+        <section class="py-16 text-center">
+            <div class="container mx-auto px-6">
+                <h1 class="text-5xl md:text-7xl font-bold mb-6">
+                    <span class="bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+                        Professional Journey
+                    </span>
+                </h1>
+                <p class="text-xl text-grey-400 max-w-3xl mx-auto mb-8">
+                    Exploring my career evolution from creative media to data science - 
+                    showcasing 14+ years of professional growth, education, and certifications
+                </p>
+                <div class="flex flex-wrap justify-center gap-4 text-sm">
+                    <span class="px-4 py-2 bg-blue-500/20 text-blue-300 rounded-full">14 Positions</span>
+                    <span class="px-4 py-2 bg-red-500/20 text-red-300 rounded-full">3 Degrees</span>
+                    <span class="px-4 py-2 bg-green-500/20 text-green-300 rounded-full">5+ Certifications</span>
+                    <span class="px-4 py-2 bg-purple-500/20 text-purple-300 rounded-full">2010-Present</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Career Milestones -->
+        <section class="py-16 bg-grey-800/30">
+            <div class="container mx-auto px-6">
+                <h2 class="text-4xl font-bold text-center mb-4">
+                    <span class="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+                        Interactive Career Milestones
+                    </span>
+                </h2>
+                <p class="text-grey-400 text-center mb-12">Drag the milestone events above and below the timeline to explore my professional journey</p>
+                
+                <div id="milestone-container">
+                    <div class="milestone-header">
+                        <h3 class="text-2xl font-bold text-white mb-2">Professional Journey</h3>
+                        <p class="text-grey-300 text-sm">2010 - Present</p>
+                    </div>
+                    
+                    <div id="paper-container"></div>
+                    
+                    <div class="milestone-instructions">
+                        <p class="text-white text-sm font-medium mb-1">💡 Interactive Timeline</p>
+                        <p class="text-grey-300 text-xs">Drag milestone events to reposition them above or below the timeline</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Education Section -->
+        <section class="py-16">
+            <div class="container mx-auto px-6">
+                <h2 class="text-4xl font-bold text-center mb-12">
+                    <span class="bg-gradient-to-r from-red-400 to-pink-400 bg-clip-text text-transparent">
+                        Education
+                    </span>
+                </h2>
+                
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- BS Information Technology -->
+                    <div class="glow-card rounded-2xl p-6 slide-in-up">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-2xl font-bold mr-4">🎓</div>
+                            <span class="text-red-400 font-mono text-sm">2021-2023</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">BS Information Technology</h3>
+                        <h4 class="text-grey-300 mb-3">Capella University</h4>
+                        <p class="text-grey-400 text-sm">Comprehensive knowledge in systems, networking, and technology management with focus on enterprise solutions.</p>
+                    </div>
+
+                    <!-- Associate's Degree -->
+                    <div class="glow-card rounded-2xl p-6 slide-in-up" style="animation-delay: 0.2s">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-2xl font-bold mr-4">🔧</div>
+                            <span class="text-red-400 font-mono text-sm">2015-2016</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Associate's Degree</h3>
+                        <h4 class="text-grey-300 mb-3">De Anza College</h4>
+                        <p class="text-grey-400 text-sm">Network & System Administration with foundational knowledge in IT infrastructure and system management.</p>
+                    </div>
+
+                    <!-- BFA Motion Pictures -->
+                    <div class="glow-card rounded-2xl p-6 slide-in-up" style="animation-delay: 0.4s">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-2xl font-bold mr-4">🎬</div>
+                            <span class="text-red-400 font-mono text-sm">2011-2013</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">BFA Motion Pictures & TV</h3>
+                        <h4 class="text-grey-300 mb-3">Academy of Art University</h4>
+                        <p class="text-grey-400 text-sm">Creative and technical skills in video production, editing, and visual storytelling.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Certifications Section -->
+        <section class="py-16 bg-grey-800/30">
+            <div class="container mx-auto px-6">
+                <h2 class="text-4xl font-bold text-center mb-12">
+                    <span class="bg-gradient-to-r from-green-400 to-teal-400 bg-clip-text text-transparent">
+                        Certifications
+                    </span>
+                </h2>
+                
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Google IT Professional -->
+                    <div class="glow-card rounded-2xl p-6 slide-in-up">
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center text-3xl font-bold mx-auto mb-4">🌐</div>
+                            <h3 class="text-lg font-bold mb-2">Google IT Professional Certificate</h3>
+                            <p class="text-green-400 text-sm mb-3">Google Career Certificates</p>
+                            <p class="text-grey-400 text-sm">Technical support fundamentals, networking, operating systems, and IT security.</p>
+                        </div>
+                    </div>
+
+                    <!-- SQL Programming -->
+                    <div class="glow-card rounded-2xl p-6 slide-in-up" style="animation-delay: 0.1s">
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center text-3xl font-bold mx-auto mb-4">🗄️</div>
+                            <h3 class="text-lg font-bold mb-2">Learning SQL Programming</h3>
+                            <p class="text-green-400 text-sm mb-3">SQL Certification</p>
+                            <p class="text-grey-400 text-sm">Database design, query optimization, stored procedures, and data manipulation.</p>
+                        </div>
+                    </div>
+
+                    <!-- Python Programming -->
+                    <div class="glow-card rounded-2xl p-6 slide-in-up" style="animation-delay: 0.2s">
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center text-3xl font-bold mx-auto mb-4">🐍</div>
+                            <h3 class="text-lg font-bold mb-2">Introduction to Programming Using Python</h3>
+                            <p class="text-green-400 text-sm mb-3">Python Certification</p>
+                            <p class="text-grey-400 text-sm">Programming fundamentals, data structures, and algorithmic thinking.</p>
+                        </div>
+                    </div>
+
+                    <!-- ITIL Foundation -->
+                    <div class="glow-card rounded-2xl p-6 slide-in-up" style="animation-delay: 0.3s">
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center text-3xl font-bold mx-auto mb-4">⚙️</div>
+                            <h3 class="text-lg font-bold mb-2">ITIL Foundation</h3>
+                            <p class="text-green-400 text-sm mb-3">ITIL Certification</p>
+                            <p class="text-grey-400 text-sm">IT service management best practices and service lifecycle management.</p>
+                        </div>
+                    </div>
+
+                    <!-- Tableau Prep I -->
+                    <div class="glow-card rounded-2xl p-6 slide-in-up" style="animation-delay: 0.4s">
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center text-3xl font-bold mx-auto mb-4">📊</div>
+                            <h3 class="text-lg font-bold mb-2">Tableau Prep I (TTP101)</h3>
+                            <p class="text-green-400 text-sm mb-3">Salesforce Tableau Community</p>
+                            <p class="text-grey-400 text-sm">Advanced data visualization and preparation techniques.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Additional Rich Details Section -->
+        <section class="py-16">
+            <div class="container mx-auto px-6">
+                <h2 class="text-4xl font-bold text-center mb-12">
+                    <span class="bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">
+                        Skills & Expertise
+                    </span>
+                </h2>
+                
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Technical Skills -->
+                    <div class="glow-card rounded-2xl p-6 slide-in-up">
+                        <h3 class="text-xl font-bold mb-4 text-purple-300">Technical Skills</h3>
+                        <div class="space-y-2">
+                            <span class="inline-block px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-sm">Bootstrap</span>
+                            <span class="inline-block px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-sm">SQL</span>
+                            <span class="inline-block px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-sm">Tableau</span>
+                            <span class="inline-block px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-sm">Python</span>
+                            <span class="inline-block px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-sm">Video Editing</span>
+                        </div>
+                    </div>
+
+                    <!-- Languages -->
+                    <div class="glow-card rounded-2xl p-6 slide-in-up" style="animation-delay: 0.1s">
+                        <h3 class="text-xl font-bold mb-4 text-purple-300">Languages</h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-grey-300">English</span>
+                                <span class="text-sm text-grey-400">Native</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-grey-300">Telugu</span>
+                                <span class="text-sm text-grey-400">Native</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-grey-300">Hindi</span>
+                                <span class="text-sm text-grey-400">Fluent</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-grey-300">Tamil</span>
+                                <span class="text-sm text-grey-400">Conversational</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-grey-300">Spanish</span>
+                                <span class="text-sm text-grey-400">Basic</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Location History -->
+                    <div class="glow-card rounded-2xl p-6 slide-in-up" style="animation-delay: 0.2s">
+                        <h3 class="text-xl font-bold mb-4 text-purple-300">Bay Area Experience</h3>
+                        <div class="space-y-2">
+                            <div class="text-grey-300 text-sm">🏢 Sunnyvale - Walmart</div>
+                            <div class="text-grey-300 text-sm">🏢 Redmond - Microsoft</div>
+                            <div class="text-grey-300 text-sm">🏢 Milpitas - SonicWall</div>
+                            <div class="text-grey-300 text-sm">🏢 San Jose - Bloom Energy</div>
+                            <div class="text-grey-300 text-sm">🏢 Palo Alto - Jazz Pharma</div>
+                        </div>
+                    </div>
+
+                    <!-- Achievements -->
+                    <div class="glow-card rounded-2xl p-6 slide-in-up" style="animation-delay: 0.3s">
+                        <h3 class="text-xl font-bold mb-4 text-purple-300">Key Achievements</h3>
+                        <div class="space-y-2">
+                            <div class="text-grey-300 text-sm">📈 14+ years experience</div>
+                            <div class="text-grey-300 text-sm">🎯 3 career pivots</div>
+                            <div class="text-grey-300 text-sm">🏆 5+ certifications</div>
+                            <div class="text-grey-300 text-sm">🚀 Data Scientist at Fortune 1</div>
+                            <div class="text-grey-300 text-sm">🌟 Tableau Community Member</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-grey-800 text-grey-400 py-8 text-center">
+        <p>&copy; 2024 Navneet. This is a test version of the About Me page.</p>
+    </footer>
+
+    <!-- Interactive Milestone Timeline Script -->
+    <script>
+        // Wait for page to load before initializing milestones
+        window.addEventListener('load', function() {
+            setTimeout(initializeMilestones, 1000); // Give time for other components to load
+        });
+
+        function initializeMilestones() {
+            if (typeof joint === 'undefined') {
+                console.log('JointJS not loaded yet, retrying...');
+                setTimeout(initializeMilestones, 500);
+                return;
+            }
+
+            const { dia, util, shapes: defaultShapes } = joint;
+
+            const chevronCount = 35;
+            const chevronHeight = 6;
+            const chevronWidth = 2;
+            const timelineColor = '#00d4ff';
+            const backgroundColor = '#1a1a2e';
+            const padding = 10;
+            const gap = 85;
+            const timelineY = 300;
+            const timelineXMin = 120;
+            const timelineXMax = 1000;
+
+            const timelineEventJSONMarkup = util.svg`
+                <ellipse @selector="body"/>
+                <text @selector="title"/>
+                <text @selector="subtitle"/>
+                <text @selector="description"/>
+            `;
+
+            class TimelineEvent extends dia.Element {
+                defaults() {
+                    return {
+                        ...super.defaults,
+                        type: 'TimelineEvent',
+                        attrs: {
+                            root: {
+                                magnetSelector: 'body'
+                            },
+                            body: {
+                                stroke: 'none',
+                                cx: 'calc(w/2)',
+                                cy: 'calc(h/2)',
+                                rx: 'calc(w/2)',
+                                ry: 'calc(h/2)',
+                            },
+                            title: {
+                                text: 'Label Inside',
+                                fontSize: 16,
+                                fontFamily: 'Inter, sans-serif',
+                                fontWeight: 'bold',
+                                fill: timelineColor,
+                                textVerticalAnchor: 'top',
+                                textAnchor: 'end',
+                                x: 'calc(w)',
+                                y: 'calc(h + 10)'
+                            },
+                            subtitle: {
+                                text: 'Subtitle',
+                                fontSize: 13,
+                                fontFamily: 'Inter, sans-serif',
+                                fontWeight: '600',
+                                fill: '#fff',
+                                textVerticalAnchor: 'top',
+                                textAnchor: 'end',
+                                x: 'calc(w)',
+                                y: 'calc(h + 35)'
+                            },
+                            description: {
+                                text: 'Description',
+                                fontSize: 11,
+                                fontFamily: 'Inter, sans-serif',
+                                fill: '#9ca3af',
+                                textVerticalAnchor: 'top',
+                                textAnchor: 'end',
+                                x: 'calc(w)',
+                                y: 'calc(h + 55)'
+                            },
+                        }
+                    };
+                }
+
+                preinitialize() {
+                    this.markup = timelineEventJSONMarkup;
+                }
+
+                positionLabels() {
+                    if (this.position().y > timelineY) {
+                        if (this.attr('title/y') === 'calc(h + 10)') return;
+                        this.attr({
+                            title: {
+                                y: 'calc(h + 10)',
+                                textVerticalAnchor: 'top'
+                            },
+                            subtitle: {
+                                y: 'calc(h + 35)',
+                                textVerticalAnchor: 'top'
+                            },
+                            description: {
+                                y: 'calc(h + 55)',
+                                textVerticalAnchor: 'top'
+                            }
+                        });
+                    } else {
+                        if (this.attr('title/y') === -10) return;
+                        this.attr({
+                            title: {
+                                y: -10,
+                                textVerticalAnchor: 'bottom'
+                            },
+                            subtitle: {
+                                y: -35,
+                                textVerticalAnchor: 'bottom'
+                            },
+                            description: {
+                                y: -55,
+                                textVerticalAnchor: 'bottom'
+                            }
+                        });
+                    }
+                }
+            }
+
+            const shapes = { ...defaultShapes, TimelineEvent };
+
+            const graph = new dia.Graph({}, {
+                cellNamespace: shapes
+            });
+
+            const paper = new dia.Paper({  
+                width: "100%",
+                height: "100%",
+                model: graph,
+                defaultConnectionPoint: {
+                    name: 'boundary'
+                },
+                background: {
+                    color: 'transparent'
+                },
+                cellViewNamespace: shapes,
+                interactive: (cellView) => {
+                    return (cellView.model instanceof TimelineEvent);
+                },
+                restrictTranslate(elementView) {
+                    const timelineMargin = 20;
+                    const bbox = elementView.model.getBBox();
+                    const xMin = timelineXMin;
+                    const xMax = timelineXMax - bbox.width;
+                    const yMin = timelineY - bbox.height - timelineMargin;
+                    const yMax = timelineY + timelineMargin;
+                    return function(x, y) {
+                        return {
+                            x: Math.max(xMin, Math.min(xMax, x)),
+                            y: (y > timelineY) ? Math.max(yMax, y) : Math.min(yMin, y)
+                        };
+                    };
+                },
+                gridSize: 10,
+                async: true,
+                sorting: dia.Paper.sorting.APPROX,
+                defaultLink: () => new shapes.standard.DoubleLink(),
+                defaultLinkAnchor: { name: 'connectionPerpendicular' }
+            });
+
+            const container = document.getElementById('paper-container');
+            if (container) {
+                container.appendChild(paper.el);
+            }
+
+            // Timeline
+            const start = new shapes.standard.Ellipse({
+                position: {
+                    x: timelineXMin - 100,
+                    y: timelineY - 50
+                },
+                size: {
+                    width: 100,
+                    height: 100
+                },
+                attrs: {
+                    root: {
+                        pointerEvents: 'none'
+                    },
+                    body: {
+                        stroke: timelineColor,
+                        fill: backgroundColor,
+                        strokeWidth: 3
+                    },
+                    label: {
+                        fill: timelineColor,
+                        fontFamily: 'Inter, sans-serif',
+                        fontSize: 14,
+                        fontWeight: 'bold'
+                    }
+                }
+            });
+
+            const end = new shapes.standard.Ellipse({
+                position: {
+                    x: timelineXMax,
+                    y: timelineY - 25
+                },
+                size: {
+                    width: 50,
+                    height: 50
+                },
+                attrs: {
+                    root: {
+                        pointerEvents: 'none'
+                    },
+                    body: {
+                        stroke: timelineColor,
+                        fill: backgroundColor,
+                        strokeWidth: 3
+                    },
+                    label: {
+                        fontSize: 12,
+                        fill: timelineColor,
+                        fontFamily: 'Inter, sans-serif',
+                        fontWeight: 'bold',
+                        text: 'Present'
+                    }
+                }
+            });
+
+            const timeline = new shapes.standard.Link({
+                source: {
+                    id: start.id
+                },
+                target: {
+                    id: end.id
+                },
+                z: -2,
+                attrs: {
+                    root: {
+                        pointerEvents: 'none'
+                    },
+                    line: {
+                        strokeWidth: chevronHeight,
+                        stroke: timelineColor,
+                        targetMarker: null,
+                        vertexMarker: {
+                            d: `M -${2 * chevronWidth} -${chevronHeight / 2} h ${chevronWidth} L 0 0 -${chevronWidth} ${chevronHeight / 2} h -${chevronWidth} L -${chevronWidth} 0 z`,
+                            fill: backgroundColor,
+                            stroke: 'none'
+                        }
+                    }
+                },
+                vertices: Array.from({ length: chevronCount }).map((_, i) => {
+                    return {
+                        x: timelineXMin + padding + i * (timelineXMax - timelineXMin - padding) / chevronCount,
+                        y: timelineY
+                    };
+                })
+            });
+
+            graph.addCells([start, end, timeline]);
+
+            graph.on('change:position', function(cell) {
+                if (cell instanceof TimelineEvent) {
+                    cell.positionLabels();
+                }
+            });
+
+            // Career Milestones
+            const colors = [
+                '#ff6b6b', '#4ecdc4', '#45b7d1', '#f9ca24', '#f0932b', 
+                '#eb4d4b', '#6c5ce7', '#00d2d3', '#ff7675', '#74b9ff',
+                '#fd79a8', '#fdcb6e', '#00b894', '#e17055', '#a29bfe'
+            ];
+
+            function shadeHexColor(color, percent) {
+                const f = parseInt(color.slice(1), 16);
+                const t = percent < 0 ? 0 : 255;
+                const p = percent < 0 ? percent * -1 : percent;
+                const R = f>>16;
+                const G = f>>8&0x00FF;
+                const B = f&0x0000FF;
+                return '#' + (0x1000000+(Math.round((t-R)*p)+R)*0x10000 + (Math.round((t-G)*p)+G)*0x100 + (Math.round((t-B)*p)+B)).toString(16).slice(1);
+            }
+
+            start.attr({
+                label: {
+                    fill: shadeHexColor(colors[0], 0.3),
+                    text: 'Career\nMilestones'
+                }
+            });
+
+            // Your Career Milestones (customized for your journey)
+            addEvent(gap * 0, 60, {
+                color: colors[0],
+                title: '2010',
+                subtitle: 'Media Beginnings',
+                description: '● Started as Editing Manager at KAXT Channel 1'
+            });
+
+            addEvent(gap * 1, -80, {
+                color: colors[1],
+                title: '2012',
+                subtitle: 'Education & Teaching',
+                description: '● Teaching at FreshiFilms\n● BFA Motion Pictures & TV'
+            });
+
+            addEvent(gap * 2, 90, {
+                color: colors[2],
+                title: '2013-2014',
+                subtitle: 'HR & Business',
+                description: '● HR Associate at Technodrive\n● Improved recruiting processes'
+            });
+
+            addEvent(gap * 3, -50, {
+                color: colors[3],
+                title: '2014-2015',
+                subtitle: 'First IT Role',
+                description: '● Jr. System Admin at Baseline Financial\n● VMware & virtualization'
+            });
+
+            addEvent(gap * 4, 70, {
+                color: colors[4],
+                title: '2015-2016',
+                subtitle: 'Education & Growth',
+                description: '● Associate\'s in Network & System Admin\n● Fiber Internet Center intern'
+            });
+
+            addEvent(gap * 5, -100, {
+                color: colors[5],
+                title: '2016',
+                subtitle: 'Project Management',
+                description: '● Jr. Project Manager at Jazz Pharmaceuticals\n● Vendor communication & JAMF admin'
+            });
+
+            addEvent(gap * 6, 80, {
+                color: colors[6],
+                title: '2016-2017',
+                subtitle: 'Technical Support',
+                description: '● Technical Product Support at Alarm.com\n● Tier 2 support for major accounts'
+            });
+
+            addEvent(gap * 7, -60, {
+                color: colors[7],
+                title: '2017',
+                subtitle: 'Multiple Transitions',
+                description: '● Active Directory Admin\n● IT Project Manager at Compass'
+            });
+
+            addEvent(gap * 8, 85, {
+                color: colors[8],
+                title: '2017-2018',
+                subtitle: 'Desktop Support',
+                description: '● Bloom Energy Desktop Support\n● SQL scripts & executive support'
+            });
+
+            addEvent(gap * 9, -75, {
+                color: colors[9],
+                title: '2018-2021',
+                subtitle: 'Help Desk Excellence',
+                description: '● Asia Society Help Desk Engineer\n● 3 years of technical support mastery'
+            });
+
+            addEvent(gap * 10, 95, {
+                color: colors[10],
+                title: '2021',
+                subtitle: 'Major Leap',
+                description: '● SonicWall Information System Engineer\n● Microsoft Technical Program Manager'
+            });
+
+            addEvent(gap * 11, -45, {
+                color: colors[11],
+                title: '2021-2023',
+                subtitle: 'Walmart Journey Begins',
+                description: '● System Engineer at Walmart Global Tech\n● BS Information Technology completed'
+            });
+
+            addEvent(gap * 12, 65, {
+                color: colors[12],
+                title: '2023-2024',
+                subtitle: 'Systems Administrator',
+                description: '● Promoted to Systems Administrator\n● Critical infrastructure management'
+            });
+
+            addEvent(gap * 13, -85, {
+                color: colors[13],
+                title: '2024-Present',
+                subtitle: 'Data Scientist',
+                description: '● Advanced to Data Scientist role\n● Tableau dashboards & KPI analysis\n● Tableau Prep I certification'
+            });
+
+            function addEvent(x, y, options = {}) {
+                const { color = '#000', title = '', subtitle = '', description = '' } = options;
+                const event = new TimelineEvent({
+                    position: {
+                        x: timelineXMin + padding + x,
+                        y: y > 0 ? timelineY + y : timelineY + y - 25
+                    },
+                    size: {
+                        width: 25,
+                        height: 25
+                    },
+                    attrs: {
+                        body: {
+                            fill: color,
+                        },
+                        title: {
+                            fill: color,
+                            text: title
+                        },
+                        subtitle: {
+                            text: subtitle,
+                            fill: shadeHexColor(color, 0.3)
+                        },
+                        description: {
+                            text: description,
+                            textWrap: { width: 150, height: null }
+                        }
+                    }
+                });
+                const eventLine = new shapes.standard.Link({
+                    source: { id:  event.id },
+                    target: { id: timeline.id },
+                    z: -1,
+                    attrs: {
+                        root: {
+                            pointerEvents: 'none'
+                        },
+                        line: {
+                            strokeWidth: 1,
+                            stroke: timelineColor,
+                            strokeDasharray: '2,2',
+                            targetMarker: {
+                                markup: util.svg`
+                                    <circle r="12" stroke="${timelineColor}" stroke-width="1" fill="${backgroundColor}" />
+                                    <circle r="6" fill="${color}" stroke="none" />
+                                `
+                            }
+                        }
+                    }
+                });
+                event.positionLabels();
+                graph.addCells([event, eventLine]);
+            }
+
+            function scaleToFit() {
+                paper.scaleContentToFit({
+                    useModelGeometry: true,
+                    padding: { horizontal: 20, vertical: 40 }
+                });
+                const sy = paper.scale().sy;
+                paper.translate(0, (paper.getArea().height / 2 - timelineY) * sy);
+            }
+
+            window.addEventListener('resize', () => scaleToFit());
+            scaleToFit();
+        }
+    </script>
+
+    <!-- GSAP Animations -->
+    <script>
+        // Initialize GSAP plugins
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Card animations
+        gsap.fromTo(".slide-in-up", 
+            { 
+                opacity: 0, 
+                y: 30 
+            },
+            { 
+                opacity: 1, 
+                y: 0, 
+                duration: 0.6, 
+                stagger: 0.1,
+                scrollTrigger: {
+                    trigger: ".slide-in-up",
+                    start: "top 90%"
+                }
+            }
+        );
+
+        // Hero section animation
+        gsap.fromTo("main section:first-child h1", 
+            { opacity: 0, y: 50 },
+            { opacity: 1, y: 0, duration: 1, delay: 0.5 }
+        );
+    </script>
+
+</body>
+</html>

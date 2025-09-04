@@ -180,219 +180,125 @@
         /* Alpine.js collapse animation */
         [x-cloak] { display: none !important; }
         
-        /* Flip Button Navigation Styles */
-        .flip-button-nav {
-          --shadow-color: 0deg 0% 63%;
-          --primary: light-dark(hsl(0 0% 10%), #fff);
-          --secondary: canvas;
-          --inactive: light-dark(hsl(0 0% 60%), hsl(0 0% 50%));
-          --duration: 0.22;
-          --drop-off: 0.4;
-          --ease: linear(
-            0 0%, 0.2342 12.49%, 0.4374 24.99%,
-            0.6093 37.49%, 0.6835 43.74%,
-            0.7499 49.99%, 0.8086 56.25%,
-            0.8593 62.5%, 0.9023 68.75%, 0.9375 75%,
-            0.9648 81.25%, 0.9844 87.5%,
-            0.9961 93.75%, 1 100%
-          );
-          --border: light-dark(hsl(0 0% 80%), hsl(0 0% 60%));
+        /* Glow Header Navigation Styles */
+        .glow-nav::before,
+        .glow-nav::after,
+        .glow-nav ul.lit {
+          filter: url('#spotlight');
         }
-        
-        .flip-button-nav .premium:has(:checked)::before {
-          translate: -50% -250%;
-          scale: 0.85;
+
+        .glow-nav ul.content::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          border-radius: 100px;
+          pointer-events: none;
+          border: 1px solid white;
+          filter: url('#ambience') brightness(2);
         }
-        .flip-button-nav .premium:has(:checked) label span {
-          scale: 1;
+
+        .glow-nav ul.lit {
+          position: absolute;
+          inset: 0;
+          z-index: 2;
         }
-        .flip-button-nav .premium:has(:checked) .indicator {
-          background: var(--secondary);
-          clip-path: inset(0 0 0 0 round 100px);
+
+
+
+        .glow-nav {
+          height: 44px;
+          border-radius: 100px;
+          border: 2px solid #ff6b35;
+          position: relative;
+          box-shadow: 0 0 10px rgba(255, 107, 53, 0.5);
         }
-        .flip-button-nav .premium:has(:checked) label {
-          color: var(--inactive);
-          opacity: 0.75;
-        }
-        
-        /* Hide premium options when About Me is selected */
-        .flip-button-nav .control__track:has(#free:checked) .premium label span {
-          scale: 0;
-          opacity: 0;
+
+        .glow-nav::before,
+        .glow-nav::after {
           pointer-events: none;
         }
-        .flip-button-nav .premium:has(:nth-of-type(1):checked) label:nth-of-type(1),
-        .flip-button-nav .premium:has(:nth-of-type(2):checked) label:nth-of-type(2) {
-          color: var(--primary);
+
+        .glow-nav::after {
+          background: color-mix(in hsl, canvas, canvasText 10%);
+          content: '';
+          position: absolute;
+          inset: 0;
+          border: 1px solid color-mix(in hsl, canvasText, #0000);
+          z-index: -1;
+          border-radius: 100px;
+          opacity: 0.15;
+        }
+
+        .glow-nav::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          border: 1px solid color-mix(in hsl, canvasText, #0000);
+          z-index: 2;
+          border-radius: 100px;
+        }
+
+        .glow-nav ul {
+          display: flex;
+          align-items: center;
+          padding: 0;
+          margin: 0;
+          list-style-type: none;
+          height: 100%;
+          font-size: 0.875rem;
+        }
+
+        .glow-nav ul.lit {
+          pointer-events: none;
+        }
+
+        .glow-nav ul.lit li {
+          padding: 0.5rem 1.25rem;
+        }
+
+        .glow-nav li {
+          height: 100%;
+          display: grid;
+          place-items: center;
+        }
+
+        .glow-nav a {
+          display: grid;
+          place-items: center;
+          height: 100%;
+          padding: 0.5rem 1.25rem;
+          text-decoration: none;
+          color: white;
+          opacity: 0.8;
+          transition: opacity 0.25s ease-out;
+        }
+
+        .glow-nav a:is(:hover, :focus-visible) {
           opacity: 1;
         }
-        .flip-button-nav .premium:has(:nth-of-type(1):checked) .indicator {
-          translate: -100% 0;
-        }
-        .flip-button-nav .premium:has(:nth-of-type(2):checked) .indicator {
-          translate: 0 0;
+
+        .glow-nav [data-active='true'] {
+          opacity: 1;
+          color: #ff6b35;
+          font-weight: bold;
         }
 
-        .flip-button-nav .control label {
-          transition-property: color, opacity;
-          transition-duration: calc(var(--duration) * 1s);
-          transition-timing-function: var(--ease);
+        .glow-nav span {
+          pointer-events: none;
         }
 
-        .flip-button-nav .control__track:not(:has(> :checked)) > label {
-          color: var(--primary);
-          opacity: var(--drop-off);
-        }
-        .flip-button-nav .control__track:not(:has(> :checked)) > .indicator {
-          translate: 100% 0;
-        }
-        .flip-button-nav .indicator {
-          transition: translate calc(var(--duration) * 1s) var(--ease);
-        }
-        .flip-button-nav .premium .indicator {
-          transition-property: translate, clip-path, background;
-          transition-duration: calc(var(--duration) * 1s);
-          transition-timing-function: var(--ease);
-          clip-path: inset(
-            73cqh calc(50% + 1px) calc(27cqh - 2px) calc(50% - 3px) round 100px
-          );
-        }
-        .flip-button-nav .premium::before {
-          transition-property: scale, translate;
-          transition-duration: calc(var(--duration) * 1s);
-          transition-timing-function: var(--ease);
-        }
-        .flip-button-nav .control__track:has(> :checked) .premium .indicator {
-          background: var(--inactive);
-        }
-        .flip-button-nav .control__track:has(> :checked) .premium label {
-          color: var(--inactive);
+        /* Mobile specific styles */
+        .glow-nav.mobile {
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          background: rgba(255, 255, 255, 0.05);
         }
 
-        .flip-button-nav .indicator {
-          position: absolute;
-          width: 50%;
-          left: 0;
-          top: 0;
-          bottom: 0;
-          background: #f97316; /* Orange to match your brand */
-          border-radius: 100px;
-        }
-
-        .flip-button-nav .premium .indicator {
-          background: #f97316;
-          left: 50%;
-          top: 0;
-          translate: -50% 0;
-        }
-
-        .flip-button-nav .control {
-          scale: 1;
-          letter-spacing: 0.5px;
-          position: relative;
-          width: 280px;
-          height: 42px;
-          aspect-ratio: 300 / 42;
-          background: white;
-          border-radius: 100px;
-          border: 1px solid #e5e7eb;
-          padding: 3px;
-          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-
-        .flip-button-nav .control__track {
-          display: grid;
-          place-items: center;
-          grid-template-columns: repeat(4, 1fr);
-          width: 100%;
-          height: 100%;
-          position: relative;
-        }
-
-        .flip-button-nav .premium::before {
-          content: 'My Work';
-          position: absolute;
-          left: 50%;
-          top: 50%;
-          translate: -50% -80%;
-          color: #1f2937;
-          font-size: 0.75rem;
-          z-index: 2;
-          font-weight: 500;
-        }
-
-        .flip-button-nav label {
-          display: inline-block;
-          height: 100%;
-          width: 100%;
-          display: grid;
-          place-items: center;
-          cursor: pointer;
-          font-size: 0.875rem;
-          color: #1f2937;
-          z-index: 2;
-          font-weight: 500;
-        }
-
-        .flip-button-nav .control__track > label {
+        .glow-nav.mobile a {
           color: white;
         }
 
-        .flip-button-nav .premium {
-          width: 100%;
-          height: 100%;
-          display: grid;
-          position: relative;
-          grid-template-columns: 1fr 1fr;
-          border: 1px solid #0000;
-          container-type: size;
-        }
-
-        .flip-button-nav .premium,
-        .flip-button-nav .control__track > label:nth-of-type(1) {
-          grid-column: span 2;
-        }
-
-        .flip-button-nav label span {
-          display: grid;
-          place-items: center;
-          height: 100%;
-          width: 100%;
-          transition: scale calc(var(--duration) * 1s) var(--ease);
-        }
-
-        .flip-button-nav .premium label:nth-of-type(1) span {
-          scale: 0;
-          opacity: 0;
-          transform-origin: 150% 150%;
-          border-radius: 100px;
-          transition: scale calc(var(--duration) * 1s) var(--ease), opacity calc(var(--duration) * 1s) var(--ease);
-        }
-        .flip-button-nav .premium label:nth-of-type(2) span {
-          scale: 0;
-          opacity: 0;
-          transform-origin: -65% 150%;
-          border-radius: 100px;
-          transition: scale calc(var(--duration) * 1s) var(--ease), opacity calc(var(--duration) * 1s) var(--ease);
-        }
-        
-        /* Show options when My Work is active (About Me is NOT checked) */
-        .flip-button-nav .control__track:not(:has(#free:checked)) .premium label:nth-of-type(1) span,
-        .flip-button-nav .control__track:not(:has(#free:checked)) .premium label:nth-of-type(2) span {
-          scale: 0.75;
-          opacity: 1;
-        }
-
-        .flip-button-nav .sr-only {
-          position: absolute;
-          width: 1px;
-          height: 1px;
-          padding: 0;
-          margin: -1px;
-          overflow: hidden;
-          clip: rect(0, 0, 0, 0);
-          white-space: nowrap;
-          border-width: 0;
+        .glow-nav.mobile ul.lit li {
+          color: white;
         }
         
         /* Color Picker Panel Styles */
@@ -426,7 +332,7 @@
 
 
 
-    <div class="fixed top-0 w-full z-50 transition-all duration-300"
+    <div class="fixed top-0 w-full z-50 transition-all duration-300 bg-transparent"
          x-data="{ 
         isMobileMenuOpen: false,
         isMegaMenuOpen: false,
@@ -437,71 +343,57 @@
         window.addEventListener('scroll', () => {
             isScrolled = window.scrollY > 50;
         });
-    "
-         :class="{ 
-        'bg-white/95 backdrop-blur-sm shadow-lg': isScrolled,
-        'bg-transparent': !isScrolled
-    }">
+    ">
 
         <div class="container mx-auto px-4 lg:px-8">
-            <div class="flex items-center justify-between h-20">
+            <div class="flex items-center justify-center h-20">
 
-                <div class="flex items-center space-x-2">
-                    <a href="/" class="flex items-center space-x-3" aria-label="NG Homepage">
-                        <!-- Orange Circle Logo with NG -->
-                        <div class="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center">
-                            <span class="text-black font-bold text-sm">NG</span>
-                        </div>
-                    </a>
-                </div>
 
-                <!-- Flip Button Navigation -->
-                <div class="hidden lg:flex items-center">
-                    <div class="flip-button-nav">
-                        <div class="control" x-data="{ 
-                            currentSelection: 'about',
-                            navigate(selection) {
-                                this.currentSelection = selection;
-                                switch(selection) {
-                                    case 'about':
-                                        window.location.href = 'about-me.html';
-                                        break;
-                                    case 'projects': 
-                                        window.location.href = 'projects.html';
-                                        break;
-                                    case 'contact':
-                                        // Contact functionality - could open modal or go to contact page
-                                        alert('Contact functionality coming soon!');
-                                        break;
-                                }
-                            }
-                        }">
-                            <div class="control__track">
-                                <div class="indicator"></div>
-                                <label for="free" @click="navigate('about')">About Me</label>
-                                <input class="sr-only" type="radio" name="tier" id="free" checked />
-                                <div class="premium">
-                                    <div class="indicator"></div>
-                                    <label for="solo" @click="navigate('projects')">
-                                        <span>Projects</span><span class="sr-only">My Work Projects</span>
-                                    </label>
-                                    <input class="sr-only" type="radio" name="tier" id="solo" />
-                                    <label for="team" @click="navigate('contact')">
-                                        <span>Contact Me</span><span class="sr-only">My Work Contact Me</span>
-                                    </label>
-                                    <input class="sr-only" type="radio" name="tier" id="team" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="hidden lg:flex items-center space-x-4">
-                    <a href="#"
-                       class="px-6 py-3 bg-grey-400 text-white rounded-full font-medium cursor-not-allowed">
-                        Contact (Coming Soon)
-                    </a>
-                </div>
+                <!-- Glow Header Navigation -->
+                <nav x-data="{ 
+                    currentSelection: 'home',
+                    navigate(selection) {
+                        this.currentSelection = selection;
+                        switch(selection) {
+                            case 'home':
+                                window.location.href = 'index.html';
+                                break;
+                            case 'projects': 
+                                window.location.href = 'projects.html';
+                                break;
+                            case 'about':
+                                window.location.href = 'about-me.html';
+                                break;
+                            case 'hobbies':
+                                window.location.href = 'hobbies.html';
+                                break;
+                        }
+                    }
+                }" class="glow-nav hidden lg:block mx-auto">
+                    <ul aria-hidden="true" class="lit">
+                        <li>Home</li>
+                        <li>Projects</li>
+                        <li>About Me</li>
+                        <li>Hobbies/Interests</li>
+                    </ul>
+                    <ul class="content">
+                        <li>
+                            <a data-active="true" href="#home" @click.prevent="navigate('home')"><span>Home</span></a>
+                        </li>
+                        <li>
+                            <a href="#projects" @click.prevent="navigate('projects')"><span>Projects</span></a>
+                        </li>
+                        <li>
+                            <a href="#about" @click.prevent="navigate('about')"><span>About Me</span></a>
+                        </li>
+                        <li>
+                            <a href="#hobbies" @click.prevent="navigate('hobbies')"><span>Hobbies/Interests</span></a>
+                        </li>
+                    </ul>
+                </nav>
+
+
 
                 <button @click="isMobileMenuOpen = !isMobileMenuOpen"
                         class="lg:hidden flex flex-col justify-center items-center w-8 h-8 space-y-1">
@@ -514,48 +406,53 @@
                 </button>
             </div>
 
-            <!-- Mobile Flip Button Navigation -->
-            <div x-show="isMobileMenuOpen" x-collapse class="lg:hidden bg-white rounded-2xl mt-4 shadow-lg border border-grey-100">
+            <!-- Mobile Glow Header Navigation -->
+            <div x-show="isMobileMenuOpen" x-collapse class="lg:hidden bg-white/10 backdrop-blur-sm rounded-2xl mt-4 shadow-lg border border-white/20">
                 <div class="px-6 py-6">
-                    <div class="flip-button-nav">
-                        <div class="control" x-data="{ 
-                            currentSelection: 'about',
-                            navigate(selection) {
-                                this.currentSelection = selection;
-                                // Close mobile menu first
-                                isMobileMenuOpen = false;
-                                
-                                switch(selection) {
-                                    case 'about':
-                                        window.location.href = 'about-me.html';
-                                        break;
-                                    case 'projects': 
-                                        window.location.href = 'projects.html';
-                                        break;
-                                    case 'contact':
-                                        alert('Contact functionality coming soon!');
-                                        break;
-                                }
+                    <nav x-data="{ 
+                        currentSelection: 'about',
+                        navigate(selection) {
+                            this.currentSelection = selection;
+                            // Close mobile menu first
+                            isMobileMenuOpen = false;
+                            
+                            switch(selection) {
+                                case 'about':
+                                    window.location.href = 'about-me.html';
+                                    break;
+                                case 'projects': 
+                                    window.location.href = 'projects.html';
+                                    break;
+                                case 'about':
+                                    window.location.href = 'about-me.html';
+                                    break;
+                                case 'hobbies':
+                                    window.location.href = 'hobbies.html';
+                                    break;
                             }
-                        }" style="scale: 0.9;">
-                            <div class="control__track">
-                                <div class="indicator"></div>
-                                <label for="free-mobile" @click="navigate('about')">About Me</label>
-                                <input class="sr-only" type="radio" name="tier-mobile" id="free-mobile" checked />
-                                <div class="premium">
-                                    <div class="indicator"></div>
-                                    <label for="solo-mobile" @click="navigate('projects')">
-                                        <span>Projects</span><span class="sr-only">My Work Projects</span>
-                                    </label>
-                                    <input class="sr-only" type="radio" name="tier-mobile" id="solo-mobile" />
-                                    <label for="team-mobile" @click="navigate('contact')">
-                                        <span>Contact Me</span><span class="sr-only">My Work Contact Me</span>
-                                    </label>
-                                    <input class="sr-only" type="radio" name="tier-mobile" id="team-mobile" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                        }
+                    }" class="glow-nav mobile" style="scale: 0.9;">
+                        <ul aria-hidden="true" class="lit">
+                            <li>About Me</li>
+                            <li>Projects</li>
+                            <li>About Me</li>
+                            <li>Hobbies/Interests</li>
+                        </ul>
+                        <ul class="content">
+                            <li>
+                                <a data-active="true" href="#about" @click.prevent="navigate('about')"><span>About Me</span></a>
+                            </li>
+                            <li>
+                                <a href="#projects" @click.prevent="navigate('projects')"><span>Projects</span></a>
+                            </li>
+                            <li>
+                                <a href="#about" @click.prevent="navigate('about')"><span>About Me</span></a>
+                            </li>
+                            <li>
+                                <a href="#hobbies" @click.prevent="navigate('hobbies')"><span>Hobbies/Interests</span></a>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
             </div>
         </div>
@@ -564,20 +461,90 @@
     <!-- Global WebGL Particle Background -->
     <canvas id="webglCanvas" class="fixed inset-0 w-full h-full"></canvas>
     
+    <!-- SVG Filters for Glow Navigation -->
+    <svg class="sr-only">
+      <filter id="spotlight">
+        <feGaussianBlur
+          in="SourceAlpha"
+          stdDeviation="3"
+          result="blur"
+        ></feGaussianBlur>
+        <feSpecularLighting
+          result="lighting"
+          in="blur"
+          surfaceScale="5"
+          specularConstant="0.5"
+          specularExponent="120"
+          lighting-color="#ffffff"
+        >
+          <fePointLight x="50" y="50" z="300"></fePointLight>
+        </feSpecularLighting>
+        <feComposite
+          in="lighting"
+          in2="SourceAlpha"
+          operator="in"
+          result="composite"
+        ></feComposite>
+        <feComposite
+          in="merged"
+          in2="composite"
+          operator="arithmetic"
+          k1="0"
+          k2="1"
+          k3="1"
+          k4="0"
+          result="litPaint"
+        ></feComposite>
+      </filter>
+      <filter id="ambience">
+        <feGaussianBlur
+          in="SourceAlpha"
+          stdDeviation="3"
+          result="blur"
+        ></feGaussianBlur>
+        <feSpecularLighting
+          result="lighting"
+          in="blur"
+          surfaceScale="5"
+          specularConstant="0.5"
+          specularExponent="120"
+          lighting-color="#ffffff"
+        >
+          <fePointLight x="50" y="50" z="300"></fePointLight>
+        </feSpecularLighting>
+        <feComposite
+          in="lighting"
+          in2="SourceAlpha"
+          operator="in"
+          result="composite"
+        ></feComposite>
+        <feComposite
+          in="merged"
+          in2="composite"
+          operator="arithmetic"
+          k1="0"
+          k2="1"
+          k3="1"
+          k4="0"
+          result="litPaint"
+        ></feComposite>
+      </filter>
+    </svg>
+    
     <!-- Color Picker Panel - Center Right -->
-    <div class="fixed right-8 top-1/2 transform -translate-y-1/2 z-50 pointer-events-auto">
-        <div class="bg-black/90 backdrop-blur-sm rounded-2xl border border-white/20 shadow-2xl p-4">
-            <div class="flex flex-col gap-4">
-                <div class="color-option active w-12 h-12 rounded-full border-2 border-white/30 cursor-pointer transition-all hover:scale-110 hover:border-white/70 hover:shadow-lg" 
+    <div class="fixed right-6 top-1/2 transform -translate-y-1/2 z-50 pointer-events-auto">
+        <div class="bg-black/90 backdrop-blur-sm rounded-xl border border-white/20 shadow-2xl p-2.5">
+            <div class="flex flex-col gap-2.5">
+                <div class="color-option active w-8 h-8 rounded-full border-2 border-white/30 cursor-pointer transition-all hover:scale-110 hover:border-white/70 hover:shadow-lg" 
                      data-scheme="fire" 
                      style="background: linear-gradient(to bottom right, #ff4500, #ffcc00)"></div>
-                <div class="color-option w-12 h-12 rounded-full border-2 border-white/30 cursor-pointer transition-all hover:scale-110 hover:border-white/70 hover:shadow-lg" 
+                <div class="color-option w-8 h-8 rounded-full border-2 border-white/30 cursor-pointer transition-all hover:scale-110 hover:border-white/70 hover:shadow-lg" 
                      data-scheme="neon" 
                      style="background: linear-gradient(to bottom right, #ff00ff, #00ffff)"></div>
-                <div class="color-option w-12 h-12 rounded-full border-2 border-white/30 cursor-pointer transition-all hover:scale-110 hover:border-white/70 hover:shadow-lg" 
+                <div class="color-option w-8 h-8 rounded-full border-2 border-white/30 cursor-pointer transition-all hover:scale-110 hover:border-white/70 hover:shadow-lg" 
                      data-scheme="nature" 
                      style="background: linear-gradient(to bottom right, #00ff00, #66ffcc)"></div>
-                <div class="color-option w-12 h-12 rounded-full border-2 border-white/30 cursor-pointer transition-all hover:scale-110 hover:border-white/70 hover:shadow-lg" 
+                <div class="color-option w-8 h-8 rounded-full border-2 border-white/30 cursor-pointer transition-all hover:scale-110 hover:border-white/70 hover:shadow-lg" 
                      data-scheme="rainbow" 
                      style="background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet)"></div>
             </div>
@@ -700,7 +667,7 @@
                 <!-- Right Column - Main Heading -->
                 <div class="space-y-8">
                     <h2 class="text-6xl lg:text-7xl font-bold text-grey-900 leading-tight">
-                        Evolving <span class="text-black">Through</span><br>
+                        Evolving <span class="text-grey-900">Through</span><br>
                         <span class="inline-block relative">
                             Innovation
                         </span>
@@ -727,99 +694,110 @@
         </div>
     </section>
 
-    <!-- Featured Work Section -->
-    <section class="bg-black/95 backdrop-blur-sm text-white py-20 lg:py-32 rounded-3xl mx-4 lg:mx-8 relative z-10 content-scrollable" id="work">
-        <div class="container mx-auto px-8 lg:px-16">
-            <div class="grid lg:grid-cols-2 gap-16 items-start">
-                
-                <!-- Left Column - Project List with Scroll -->
-                <div class="space-y-2">
-                    <h2 class="text-white text-2xl font-medium mb-12">Featured Work</h2>
-                    
-                    <!-- Scrollable container -->
-                    <div class="max-h-96 overflow-y-auto space-y-8 pr-4 scrollbar-thin scrollbar-thumb-orange-500 scrollbar-track-transparent">
-                        <div class="space-y-1">
-                            <h3 class="text-5xl lg:text-6xl font-bold">LeetCode Solutions</h3>
-                            <p class="text-grey-400 text-sm">[2023-2025]</p>
-                        </div>
-                        
-                        <div class="space-y-1">
-                            <h3 class="text-5xl lg:text-6xl font-bold">Github Repos</h3>
-                            <p class="text-grey-400 text-sm">[2024-2025]</p>
-                        </div>
-                        
-                        <div class="space-y-1">
-                            <h3 class="text-5xl lg:text-6xl font-bold">Published Projects</h3>
-                            <p class="text-grey-400 text-sm">[2024]</p>
-                        </div>
-                        
-                        <div class="space-y-1">
-                            <h3 class="text-5xl lg:text-6xl font-bold">Self Taught</h3>
-                            <p class="text-grey-400 text-sm">[2022-2024]</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Right Column - Coding/Tech Images -->
-                <div class="space-y-4 max-h-96 overflow-y-auto scrollbar-thin scrollbar-thumb-orange-500 scrollbar-track-transparent">
-                    <!-- LeetCode/Coding Challenge -->
-                    <div class="rounded-2xl overflow-hidden relative group">
-                        <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500&q=80" 
-                             alt="Code on laptop screen" 
-                             class="w-full h-64 object-cover">
-                        <div class="absolute top-4 right-4 bg-white bg-opacity-20 px-3 py-1 rounded-full text-white text-sm font-medium">
-                            💻 LeetCode
-                        </div>
-                    </div>
-                    
-                    <!-- GitHub Projects -->
-                    <div class="rounded-2xl overflow-hidden relative group">
-                        <img src="https://images.unsplash.com/photo-1618477247222-acbdb0e159b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500&q=80" 
-                             alt="GitHub interface and code" 
-                             class="w-full h-64 object-cover">
-                        <div class="absolute top-4 right-4 bg-white bg-opacity-20 px-3 py-1 rounded-full text-white text-sm font-medium">
-                            🐙 GitHub
-                        </div>
-                    </div>
-                    
-                    <!-- Published Projects -->
-                    <div class="rounded-2xl overflow-hidden relative group">
-                        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500&q=80" 
-                             alt="Data visualization and analytics" 
-                             class="w-full h-64 object-cover">
-                        <div class="absolute top-4 right-4 bg-white bg-opacity-20 px-3 py-1 rounded-full text-white text-sm font-medium">
-                            📊 Projects
-                        </div>
-                    </div>
-                    
-                    <!-- Self-Taught Learning -->
-                    <div class="rounded-2xl overflow-hidden relative group bg-gradient-to-br from-blue-400 to-purple-600">
-                        <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500&q=80" 
-                             alt="Learning and studying code" 
-                             class="w-full h-64 object-cover mix-blend-multiply">
-                        <div class="absolute top-4 right-4 bg-white bg-opacity-20 px-3 py-1 rounded-full text-white text-sm font-medium">
-                            🎓 Self-Taught
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+
 
     <!-- Handwritten Title Animation Script -->
     <script>
         gsap.registerPlugin(MotionPathPlugin);
         
-        // Insert the SVG into the container
-        document.getElementById('animated-title-container').innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 23.961320877075195 191.0288848876953 39.31867980957031" class="w-full h-auto" style="filter: drop-shadow(0 0 8px rgba(255,255,255,0.3));">
-                <text x="95" y="50" font-family="Arial, sans-serif" font-size="32" fill="white" text-anchor="middle" style="text-shadow: 0 2px 4px rgba(0,0,0,0.8);">i am root</text>
+        // Load the handwritten SVG from the file
+        fetch('Title Animation/finalTitle.svg')
+            .then(response => response.text())
+            .then(svgText => {
+                // Parse the SVG and enhance it with handwritten styling
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(svgText, 'image/svg+xml');
+                const svg = doc.querySelector('svg');
                 
-
-            </svg>
-        `;
-        
-        // Simple title display - no animation needed
+                // Enhanced styling for handwritten look
+                svg.classList.add('w-full', 'h-auto');
+                svg.style.filter = 'drop-shadow(0 0 12px rgba(255,255,255,0.4)) drop-shadow(0 0 20px rgba(255,255,255,0.2))';
+                svg.style.maxWidth = '600px';
+                svg.style.margin = '0 auto';
+                
+                // Add handwritten animation styling
+                const paths = svg.querySelectorAll('path');
+                paths.forEach((path, index) => {
+                    // Make paths white with slight glow
+                    path.setAttribute('fill', 'white');
+                    path.setAttribute('stroke', 'rgba(255,255,255,0.8)');
+                    path.setAttribute('stroke-width', '0.5');
+                    
+                    // Add subtle handwritten effect
+                    path.style.filter = 'url(#roughPaper)';
+                    
+                    // Calculate path length for animation
+                    const pathLength = path.getTotalLength();
+                    path.style.strokeDasharray = pathLength;
+                    path.style.strokeDashoffset = pathLength;
+                    path.style.opacity = '0';
+                    
+                    // Animate the path drawing
+                    gsap.to(path, {
+                        strokeDashoffset: 0,
+                        opacity: 1,
+                        duration: 2 + (index * 0.3),
+                        delay: index * 0.2,
+                        ease: "power2.out"
+                    });
+                    
+                    // After drawing, fade out stroke to show clean fill
+                    gsap.to(path, {
+                        strokeWidth: 0,
+                        duration: 0.5,
+                        delay: (2 + (index * 0.3)) + 0.5,
+                        ease: "power2.out"
+                    });
+                });
+                
+                // Add paper texture filter
+                const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+                defs.innerHTML = `
+                    <filter id="roughPaper" x="0%" y="0%" width="100%" height="100%">
+                        <feTurbulence baseFrequency="0.04" numOctaves="3" result="noise"/>
+                        <feDisplacementMap in="SourceGraphic" in2="noise" scale="1"/>
+                        <feGaussianBlur stdDeviation="0.3"/>
+                    </filter>
+                `;
+                svg.insertBefore(defs, svg.firstChild);
+                
+                // Change group fill to white
+                const groups = svg.querySelectorAll('g');
+                groups.forEach(group => {
+                    group.setAttribute('fill', 'white');
+                });
+                
+                document.getElementById('animated-title-container').innerHTML = svg.outerHTML;
+                
+                // Add floating animation
+                gsap.to('#animated-title-container svg', {
+                    y: -10,
+                    duration: 3,
+                    repeat: -1,
+                    yoyo: true,
+                    ease: "power2.inOut"
+                });
+            })
+            .catch(error => {
+                console.log('Could not load handwritten SVG, using enhanced fallback');
+                // Enhanced fallback with handwritten-style font
+                document.getElementById('animated-title-container').innerHTML = `
+                    <h1 class="text-4xl md:text-6xl font-bold text-white handwritten-title" 
+                        style="
+                            text-shadow: 0 0 12px rgba(255,255,255,0.4), 0 0 20px rgba(255,255,255,0.2), 0 2px 4px rgba(0,0,0,0.8);
+                            font-family: 'Courier New', 'Brush Script MT', cursive;
+                            letter-spacing: 2px;
+                            transform: rotate(-1deg);
+                            filter: drop-shadow(0 0 8px rgba(255,255,255,0.3));
+                        ">i am root</h1>
+                `;
+                
+                // Animate fallback text
+                gsap.fromTo('.handwritten-title', 
+                    { opacity: 0, y: 30, rotation: -5 },
+                    { opacity: 1, y: 0, rotation: -1, duration: 2, ease: "back.out(1.7)" }
+                );
+            });
     </script>
     
 
@@ -1382,6 +1360,136 @@
         window.addEventListener('load', () => {
             setTimeout(init, 500);
         });
+    </script>
+
+    <!-- Glow Header Navigation Script -->
+    <script type="module">
+        import gsap from 'https://cdn.skypack.dev/gsap@3.12.0'
+
+        const config = {
+          spotlight: {
+            speed: 0.3,
+            deviation: 8.7,
+            surface: 0.5,
+            specular: 6.0,
+            exponent: 65.0,
+            light: 'hsla(26, 97%, 31%, 0.25)',
+            x: -2,
+            y: 52,
+            z: 82,
+            pointer: true,
+          },
+          ambience: {
+            deviation: 0.8,
+            surface: 0.5,
+            specular: 25,
+            exponent: 65,
+            light: 'hsla(234, 14%, 72%, 0.25)',
+            x: 120,
+            y: -154,
+            z: 160,
+          },
+        }
+
+        const nav = document.querySelector('.glow-nav')
+        const mobileNav = document.querySelector('.glow-nav.mobile')
+        
+        if (nav) {
+            const links = nav.querySelectorAll('a')
+            const spotlightfeGaussianBlur = document.querySelector('#spotlight feGaussianBlur')
+            const spotlightfeSpecularLighting = document.querySelector('#spotlight feSpecularLighting')
+            const spotlightfePointLight = document.querySelector('#spotlight fePointLight')
+            const ambiencefeGaussianBlur = document.querySelector('#ambience feGaussianBlur')
+            const ambiencefeSpecularLighting = document.querySelector('#ambience feSpecularLighting')
+            const ambiencefePointLight = document.querySelector('#ambience fePointLight')
+
+            const syncLight = ({ x, y }) => {
+              const navBounds = nav.getBoundingClientRect()
+              spotlightfePointLight.setAttribute('x', Math.floor(x - navBounds.x))
+              spotlightfePointLight.setAttribute('y', Math.floor(y - navBounds.y))
+            }
+            
+            let monitoring = false
+
+            const update = () => {
+              // set spotlight
+              spotlightfeGaussianBlur.setAttribute('stdDeviation', config.spotlight.deviation)
+              spotlightfeSpecularLighting.setAttribute('surfaceScale', config.spotlight.surface)
+              spotlightfeSpecularLighting.setAttribute('specularConstant', config.spotlight.specular)
+              spotlightfeSpecularLighting.setAttribute('specularExponent', config.spotlight.exponent)
+              spotlightfeSpecularLighting.setAttribute('lighting-color', config.spotlight.light)
+              
+              // set ambience
+              ambiencefeGaussianBlur.setAttribute('stdDeviation', config.ambience.deviation)
+              ambiencefeSpecularLighting.setAttribute('surfaceScale', config.ambience.surface)
+              ambiencefeSpecularLighting.setAttribute('specularConstant', config.ambience.specular)
+              ambiencefeSpecularLighting.setAttribute('specularExponent', config.ambience.exponent)
+              ambiencefeSpecularLighting.setAttribute('lighting-color', config.ambience.light)
+              
+              const anchor = nav.querySelector('[data-active="true"]')
+              if (anchor) {
+                const navBounds = nav.getBoundingClientRect()
+                const anchorBounds = anchor.getBoundingClientRect()
+
+                spotlightfePointLight.setAttribute('x', anchorBounds.left - navBounds.left + anchorBounds.width * 0.5 + config.spotlight.x)
+                spotlightfePointLight.setAttribute('y', config.spotlight.y)
+                spotlightfePointLight.setAttribute('z', config.spotlight.z)
+              }
+
+              ambiencefePointLight.setAttribute('x', config.ambience.x)
+              ambiencefePointLight.setAttribute('y', config.ambience.y)
+              ambiencefePointLight.setAttribute('z', config.ambience.z)
+
+              if (config.spotlight.pointer && !monitoring) {
+                monitoring = true
+                nav.dataset.pointerLighting = true
+                window.addEventListener('pointermove', syncLight)
+              } else if (!config.spotlight.pointer) {
+                monitoring = false
+                nav.dataset.pointerLighting = false
+                window.removeEventListener('pointermove', syncLight)
+              }
+            }
+
+            const selectAnchor = (anchor) => {
+              if (!config.spotlight.pointer) {
+                const navBounds = nav.getBoundingClientRect()
+                const anchorBounds = anchor.getBoundingClientRect()
+                
+                for (const link of links) link.dataset.active = anchor === link
+                
+                gsap.to(spotlightfePointLight, {
+                  duration: config.spotlight.speed,
+                  attr: {
+                    x: anchorBounds.left - navBounds.left + anchorBounds.width * 0.5 + config.spotlight.x,
+                  },
+                })
+              } else {
+                for (const link of links) link.dataset.active = anchor === link
+              }
+            }
+
+            // Initialize
+            update()
+
+            // Add click handlers
+            nav.addEventListener('click', (event) => {
+              if (event.target.tagName === 'A') {
+                selectAnchor(event.target)
+              }
+            })
+        }
+
+        // Handle mobile navigation if it exists
+        if (mobileNav) {
+            const mobileLinks = mobileNav.querySelectorAll('a')
+            
+            mobileNav.addEventListener('click', (event) => {
+              if (event.target.tagName === 'A') {
+                for (const link of mobileLinks) link.dataset.active = event.target === link
+              }
+            })
+        }
     </script>
 
 </body>
