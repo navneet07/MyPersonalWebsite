@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat Widget - Navneet Garimella</title>
+    <style>
+        /* AI Chat Widget Styles */
+        .ai-chat-widget {
+            position: fixed;
+            bottom: 30px;
+            left: 0;
+            right: 0;
+            z-index: 10000;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Chat Toggle Button */
+        .chat-toggle {
+            position: absolute;
+            top: -30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .chat-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(102, 126, 234, 0.4);
+        }
+
+        .chat-toggle svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+            transition: transform 0.3s ease;
+        }
+
+        .chat-toggle.active svg {
+            transform: rotate(180deg);
+        }
+
+        /* Chat Panel */
+        .chat-panel {
+            position: absolute;
+            bottom: -30px;
+            left: 20px;
+            right: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 2px solid #ff6b35;
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 0 20px rgba(255, 107, 53, 0.3), 0 -10px 60px rgba(0, 0, 0, 0.2);
+            transform: translateY(100%);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            overflow: hidden;
+        }
+
+        .chat-panel.active {
+            transform: translateY(0);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Chat Header */
+        .chat-header {
+            padding: 20px;
+            background: rgba(255, 107, 53, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 107, 53, 0.3);
+        }
+
+        .chat-header h3 {
+            margin: 0 0 5px 0;
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .chat-header p {
+            margin: 0;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+        }
+
+        /* Chat Messages */
+        .chat-messages {
+            height: 240px;
+            padding: 20px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .message.user {
+            text-align: right;
+        }
+
+        .message.ai {
+            text-align: left;
+        }
+
+        .message-bubble {
+            display: inline-block;
+            padding: 12px 16px;
+            border-radius: 18px;
+            max-width: 85%;
+            word-wrap: break-word;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .message.user .message-bubble {
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .message.ai .message-bubble {
+            background: rgba(255, 107, 53, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 107, 53, 0.4);
+            box-shadow: 0 0 10px rgba(255, 107, 53, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        /* Chat Input */
+        .chat-input-area {
+            padding: 15px 20px;
+            border-top: 1px solid rgba(255, 107, 53, 0.3);
+            background: rgba(255, 107, 53, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .chat-input-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .chat-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .chat-input:focus {
+            border-color: rgba(255, 107, 53, 0.6);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 10px rgba(255, 107, 53, 0.2);
+        }
+
+        .send-button {
+            padding: 12px;
+            border: 1px solid #ff6b35;
+            border-radius: 50%;
+            background: rgba(255, 107, 53, 0.2);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .send-button:hover {
+            transform: scale(1.1);
+            background: rgba(255, 107, 53, 0.3);
+            box-shadow: 0 0 10px rgba(255, 107, 53, 0.4);
+        }
+
+        .send-button svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Typing Indicator */
+        .typing-indicator {
+            display: none;
+            padding: 12px 16px;
+            margin-bottom: 15px;
+        }
+
+        .typing-indicator.active {
+            display: block;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .typing-dots span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+            animation: typingDots 1.4s infinite;
+        }
+
+        .typing-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes typingDots {
+            0%, 60%, 100% {
+                transform: scale(1);
+                opacity: 0.6;
+            }
+            30% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .ai-chat-widget {
+                bottom: 25px;
+            }
+            
+            .chat-panel {
+                left: 10px;
+                right: 10px;
+                height: 350px;
+                bottom: -25px;
+            }
+            
+            .chat-messages {
+                height: 190px;
+            }
+            
+            .chat-toggle {
+                right: 20px;
+                top: -25px;
+            }
+        }
+        
+        @media (max-width: 420px) {
+            .ai-chat-widget {
+                bottom: 20px;
+            }
+            
+            .chat-panel {
+                left: 5px;
+                right: 5px;
+                height: 300px;
+                bottom: -20px;
+            }
+            
+            .chat-messages {
+                height: 140px;
+            }
+            
+            .chat-toggle {
+                right: 15px;
+                width: 50px;
+                height: 50px;
+                top: -20px;
+            }
+            
+            .chat-toggle svg {
+                width: 20px;
+                height: 20px;
+            }
+        }
+
+        /* Welcome Message Styling */
+        .welcome-message {
+            background: rgba(255, 107, 53, 0.15);
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 0 15px rgba(255, 107, 53, 0.1);
+        }
+
+        .welcome-message h4 {
+            margin: 0 0 8px 0;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .welcome-message p {
+            margin: 0 0 12px 0;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .suggestion-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .suggestion-chip {
+            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .suggestion-chip:hover {
+            background: rgba(255, 107, 53, 0.2);
+            border-color: rgba(255, 107, 53, 0.4);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- AI Chat Widget -->
+    <div class="ai-chat-widget">
+        <!-- Chat Toggle Button -->
+        <button class="chat-toggle" id="chatToggle">
+            <svg viewBox="0 0 24 24">
+                <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
+            </svg>
+        </button>
+
+        <!-- Chat Panel -->
+        <div class="chat-panel" id="chatPanel">
+            <!-- Chat Header -->
+            <div class="chat-header">
+                <h3>Ask About Navneet</h3>
+                <p>Data Scientist • Systems Admin • AiY Music</p>
+            </div>
+
+            <!-- Chat Messages -->
+            <div class="chat-messages" id="chatMessages">
+                <!-- Welcome Message -->
+                <div class="welcome-message">
+                    <h4>👋 Hi there!</h4>
+                    <p>I'm here to answer questions about Navneet Garimella's background, experience, and projects. Try asking:</p>
+                    <div class="suggestion-chips">
+                        <span class="suggestion-chip" onclick="sendSuggestion('Tell me about Navneet')">About Navneet</span>
+                        <span class="suggestion-chip" onclick="sendSuggestion('Skills?')">Skills</span>
+                        <span class="suggestion-chip" onclick="sendSuggestion('AiY Music?')">AiY Music</span>
+                        <span class="suggestion-chip" onclick="sendSuggestion('Contact info')">Contact</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Typing Indicator -->
+            <div class="typing-indicator" id="typingIndicator">
+                <div class="message-bubble">
+                    <div class="typing-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Input -->
+            <div class="chat-input-area">
+                <form class="chat-input-form" id="chatForm">
+                    <input type="text" class="chat-input" id="chatInput" placeholder="Ask me anything about Navneet..." autocomplete="off">
+                    <button type="submit" class="send-button">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // AI Chat Widget JavaScript
+        class AIChat {
+            constructor() {
+                this.chatToggle = document.getElementById('chatToggle');
+                this.chatPanel = document.getElementById('chatPanel');
+                this.chatMessages = document.getElementById('chatMessages');
+                this.chatForm = document.getElementById('chatForm');
+                this.chatInput = document.getElementById('chatInput');
+                this.typingIndicator = document.getElementById('typingIndicator');
+                this.isOpen = false;
+                
+                this.initEventListeners();
+                this.loadKnowledgeBase();
+            }
+
+            initEventListeners() {
+                this.chatToggle.addEventListener('click', () => this.toggleChat());
+                this.chatForm.addEventListener('submit', (e) => this.handleSubmit(e));
+                
+                // Close chat when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (!e.target.closest('.ai-chat-widget') && this.isOpen) {
+                        this.closeChat();
+                    }
+                });
+            }
+
+            async loadKnowledgeBase() {
+                try {
+                    const response = await fetch('./ai-knowledge-base.json');
+                    this.knowledgeBase = await response.json();
+                } catch (error) {
+                    console.error('Failed to load knowledge base:', error);
+                    this.knowledgeBase = null;
+                }
+            }
+
+            toggleChat() {
+                if (this.isOpen) {
+                    this.closeChat();
+                } else {
+                    this.openChat();
+                }
+            }
+
+            openChat() {
+                this.isOpen = true;
+                this.chatPanel.classList.add('active');
+                this.chatToggle.classList.add('active');
+                this.chatInput.focus();
+            }
+
+            closeChat() {
+                this.isOpen = false;
+                this.chatPanel.classList.remove('active');
+                this.chatToggle.classList.remove('active');
+            }
+
+            handleSubmit(e) {
+                e.preventDefault();
+                const message = this.chatInput.value.trim();
+                if (!message) return;
+
+                this.addMessage(message, 'user');
+                this.chatInput.value = '';
+                this.processMessage(message);
+            }
+
+            addMessage(message, sender) {
+                const messageElement = document.createElement('div');
+                messageElement.className = `message ${sender}`;
+                
+                const bubbleElement = document.createElement('div');
+                bubbleElement.className = 'message-bubble';
+                bubbleElement.innerHTML = message;
+                
+                messageElement.appendChild(bubbleElement);
+                this.chatMessages.appendChild(messageElement);
+                
+                // Scroll to bottom
+                this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+            }
+
+            showTyping() {
+                this.typingIndicator.classList.add('active');
+                this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+            }
+
+            hideTyping() {
+                this.typingIndicator.classList.remove('active');
+            }
+
+            async processMessage(message) {
+                this.showTyping();
+                
+                // Simulate typing delay
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                const response = this.generateResponse(message);
+                
+                this.hideTyping();
+                this.addMessage(response, 'ai');
+            }
+
+            generateResponse(message) {
+                if (!this.knowledgeBase) {
+                    return "I'm having trouble accessing my knowledge base right now. Please try again later or contact Navneet directly at navneet.garimella@walmart.com";
+                }
+
+                const lowerMessage = message.toLowerCase();
+                const kb = this.knowledgeBase;
+
+                // Handle greetings
+                if (lowerMessage.match(/^(hi|hello|hey|good morning|good afternoon)/)) {
+                    return `Hi there! I'm here to help you learn about Navneet Garimella - ${kb.professional_summary.bio} Ask me about his experience, skills, projects, or creative work with AiY Music!`;
+                }
+
+                // Handle name variations
+                if (lowerMessage.match(/(who is|tell me about|about).*(navneet|nitin)/i)) {
+                    return `Navneet Garimella is a ${kb.basics.current_title} at ${kb.basics.company} based in ${kb.basics.location}. ${kb.professional_summary.bio} He has ${kb.basics.experience_duration} and has worked with companies like Microsoft, SonicWall, and others across retail, tech, healthcare, and non-profit sectors.`;
+                }
+
+                // Handle skills questions
+                if (lowerMessage.match(/(skills?|technical|technologies|tools)/)) {
+                    const skills = [
+                        ...kb.skills.analytics_data.slice(0, 3),
+                        ...kb.skills.systems_administration.slice(0, 3)
+                    ];
+                    return `Navneet has strong technical skills including ${skills.join(', ')}. He's particularly skilled at combining analytics with systems administration. His specialties include dashboard building, reporting automation, and IT infrastructure management. He also has creative skills in music production across 5 languages! Want to know more about any specific area?`;
+                }
+
+                // Handle music/creative questions
+                if (lowerMessage.match(/(music|aiy|creative|sing|song)/)) {
+                    return `AiY Music is Navneet's creative venture that's really impressive! He creates multilingual music in ${kb.creative_profile.languages.join(', ')} across genres like ${kb.creative_profile.genres.slice(0, 4).join(', ')}. He's shared 100+ free instrumental tracks online to help other musicians collaborate and jam. His tracks include works like "${kb.creative_profile.key_works[0].title}" and "${kb.creative_profile.key_works[1].title}". This creative background brings unique problem-solving perspectives to his technical work!`;
+                }
+
+                // Handle experience/work questions
+                if (lowerMessage.match(/(experience|work|job|career|walmart|microsoft)/)) {
+                    const currentRole = kb.experience[0];
+                    return `At ${currentRole.company}, Navneet ${currentRole.responsibilities.slice(0, 2).join(' and ')}. He's been there for ${currentRole.duration}. Previously, he worked at Microsoft as a Technical Program Manager, plus roles at SonicWall, Asia Society, Bloom Energy, and others. His diverse experience spans retail, tech, healthcare, and non-profit sectors.`;
+                }
+
+                // Handle projects questions
+                if (lowerMessage.match(/(projects?|dashboard|tableau|sql)/)) {
+                    const projects = kb.key_projects.slice(0, 2);
+                    return `Navneet has built some impressive projects! His ${projects[0].name} uses ${projects[0].technologies.join(', ')} and ${projects[0].impact}. He's also created ${projects[1].name} that ${projects[1].impact}. These projects show his ability to turn data into actionable business insights.`;
+                }
+
+                // Handle location questions
+                if (lowerMessage.match(/(location|where|bay area|silicon valley|cupertino)/)) {
+                    return `Navneet is based in ${kb.basics.location} - right in the heart of Silicon Valley! This puts him at the center of the tech industry with access to major companies and innovative startups. Perfect location for tech opportunities!`;
+                }
+
+                // Handle contact questions
+                if (lowerMessage.match(/(contact|email|reach|hire|talk)/)) {
+                    return `You can reach Navneet at ${kb.basics.email} or connect via LinkedIn at ${kb.basics.linkedin}. Check out his portfolio at ${kb.basics.portfolio}. He's ${kb.professional_summary.availability}. I'd recommend mentioning specific opportunities you'd like to discuss!`;
+                }
+
+                // Handle availability questions
+                if (lowerMessage.match(/(available|looking|job|opportunity|hire)/)) {
+                    return `${kb.professional_summary.availability}. He's particularly interested in ${kb.career_preferences.role_types.slice(0, 3).join(', ')} roles and ${kb.career_preferences.growth_paths.slice(0, 2).join(' or ')}. His unique combination of technical expertise and creative entrepreneurship makes him a strong candidate for innovative companies.`;
+                }
+
+                // Handle single word queries
+                if (lowerMessage.match(/^(passion|interests?)$/)) {
+                    return `Navneet is passionate about ${kb.interests.slice(0, 3).join(', ')}! Through AiY Music, he explores AI-assisted creativity and cultural fusion. He's particularly excited about how AI tools can enhance both analytical and creative work.`;
+                }
+
+                if (lowerMessage.match(/^(good|smart|capable)$/)) {
+                    return `Absolutely! Navneet has nearly 4 years at Walmart where he's built critical KPI dashboards and automated reporting systems. His combination of technical depth, creative thinking through AiY Music, and cross-industry experience makes him a strong problem-solver. Plus, his multilingual abilities and cultural perspective bring unique value to diverse teams.`;
+                }
+
+                // Handle comparison questions
+                if (lowerMessage.match(/(unique|different|special|why)/)) {
+                    return `What makes Navneet unique is his combination of technical expertise with creative entrepreneurship. While many data scientists focus purely on analytics, he founded AiY Music - creating multilingual content and experimenting with AI tools creatively. This artistic background enhances his technical problem-solving and brings fresh perspectives to data visualization and user experience.`;
+                }
+
+                // Default response with helpful suggestions
+                return `That's a great question! I can help you learn about Navneet's experience at Walmart and Microsoft, his technical skills in SQL/Tableau/Python, his creative work with AiY Music, or how to contact him. Try asking something like "What does he do at Walmart?" or "Tell me about AiY Music" - or ask me anything specific you're curious about!`;
+            }
+        }
+
+        // Global function for suggestion chips
+        function sendSuggestion(message) {
+            const aiChat = window.aiChatInstance;
+            if (aiChat) {
+                aiChat.addMessage(message, 'user');
+                aiChat.processMessage(message);
+            }
+        }
+
+        // Initialize the chat widget when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            window.aiChatInstance = new AIChat();
+        });
+    </script>
+</body>
+</html>

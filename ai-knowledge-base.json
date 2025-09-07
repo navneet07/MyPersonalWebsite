@@ -1,0 +1,271 @@
+{
+  "basics": {
+    "name": "Navneet Garimella",
+    "aliases": ["Nitin Garimella", "Nitin", "Navneet"],
+    "current_title": "Data Scientist & Systems Administrator",
+    "company": "Walmart Global Tech",
+    "location": "Cupertino / Sunnyvale, CA",
+    "experience_duration": "~3 years 10 months at Walmart",
+    "email": "navneet.garimella@walmart.com",
+    "linkedin": "linkedin.com/in/navneetgarimella",
+    "portfolio": "www.itguru.cloud",
+    "resume_path": "/Navneet_Garimella_Resume.pdf"
+  },
+  
+  "professional_summary": {
+    "bio": "A creative support professional turned data-focused systems engineer and founder of AiY Music. Skilled at balancing technical troubleshooting with analytics and dashboard building. Combines analytical expertise with artistic entrepreneurship, creating both technical solutions and cultural bridges through music.",
+    "unique_value": "Combines data science expertise with systems administration skills and creative entrepreneurship through multilingual music production",
+    "availability": "Currently employed at Walmart; open to data/analytics roles and developer growth paths"
+  },
+
+  "experience": [
+    {
+      "company": "Walmart Global Tech",
+      "role": "Data Scientist & Systems Administrator", 
+      "duration": "~3 years 10 months",
+      "current": true,
+      "responsibilities": [
+        "Build Tableau dashboards tracking KPIs like first-call resolution, resolution time, and technician availability",
+        "Automate reporting and contribute to Tableau Prep workflows",
+        "Develop SQL scripts and Tableau insights to streamline Tech Spot operations",
+        "Hands-on IT systems administration (Active Directory, VMware, SCCM, WSUS, MDM, VOIP, network connectivity)"
+      ],
+      "impact": [
+        "Optimized support operations through data-driven KPI dashboards",
+        "Streamlined processes with automated reporting workflows",
+        "Enhanced operational efficiency with SQL-driven insights"
+      ]
+    },
+    {
+      "company": "Microsoft",
+      "role": "Technical Program Manager",
+      "duration": "2021-2022",
+      "responsibilities": [
+        "Coordinated cross-functional projects",
+        "Provided IT systems oversight", 
+        "Gained program management practices experience"
+      ],
+      "impact": [
+        "Built foundation for analytics and leadership role at Walmart",
+        "Developed cross-functional collaboration skills"
+      ]
+    },
+    {
+      "company": "SonicWall",
+      "role": "Various IT roles",
+      "duration": "Previous experience",
+      "responsibilities": ["IT support and system administration"]
+    },
+    {
+      "company": "Asia Society", 
+      "role": "Various roles",
+      "duration": "Previous experience",
+      "sector": "Non-profit"
+    },
+    {
+      "company": "Bloom Energy",
+      "role": "Various roles", 
+      "duration": "Previous experience",
+      "sector": "Energy/Tech"
+    },
+    {
+      "company": "Alarm.com",
+      "role": "Various roles",
+      "duration": "Previous experience", 
+      "sector": "Tech/Security"
+    },
+    {
+      "company": "Jazz Pharmaceuticals",
+      "role": "Various roles",
+      "duration": "Previous experience",
+      "sector": "Healthcare/Pharmaceuticals"
+    }
+  ],
+
+  "skills": {
+    "analytics_data": [
+      "SQL (advanced query writing and optimization)",
+      "Tableau (dashboard building and KPI tracking)", 
+      "Tableau Prep (workflow automation)",
+      "Python (data analysis and scripting)",
+      "Data visualization and reporting",
+      "KPI analysis and business intelligence"
+    ],
+    "systems_administration": [
+      "Active Directory",
+      "VMware vSphere",
+      "SCCM/WSUS (patch management)",
+      "Cisco Meraki MDM",
+      "VOIP systems",
+      "Network connectivity troubleshooting",
+      "IT infrastructure management"
+    ],
+    "technical_tools": [
+      "ITIL framework",
+      "Salesforce",
+      "Bootstrap",
+      "Git",
+      "IT support and system administration"
+    ],
+    "soft_skills": [
+      "Cross-functional collaboration",
+      "Clear communication of technical concepts",
+      "Customer-focused problem solving",
+      "Project coordination",
+      "Mentoring and support",
+      "Actionable insights delivery"
+    ]
+  },
+
+  "key_projects": [
+    {
+      "name": "Walmart KPI Dashboard System",
+      "description": "Comprehensive Tableau dashboards tracking critical support metrics",
+      "technologies": ["Tableau", "SQL", "Data Analysis"],
+      "impact": "Improved operational visibility for first-call resolution, resolution time, and technician availability",
+      "type": "Analytics/BI"
+    },
+    {
+      "name": "Automated Reporting Workflows", 
+      "description": "Tableau Prep automation reducing manual reporting overhead",
+      "technologies": ["Tableau Prep", "Workflow Automation"],
+      "impact": "Significant time savings and improved data accuracy",
+      "type": "Process Automation"
+    },
+    {
+      "name": "Tech Spot SQL Optimization",
+      "description": "SQL scripts and insights streamlining technical operations", 
+      "technologies": ["SQL", "Database Optimization", "Tableau"],
+      "impact": "Enhanced operational efficiency and faster issue resolution",
+      "type": "Database/Analytics"
+    },
+    {
+      "name": "IT Infrastructure Management",
+      "description": "End-to-end systems administration across multiple platforms",
+      "technologies": ["Active Directory", "VMware", "SCCM", "Cisco Meraki"],
+      "impact": "Reliable IT infrastructure supporting business operations",
+      "type": "Systems Administration"
+    }
+  ],
+
+  "creative_profile": {
+    "brand_name": "AiY Music",
+    "description": "Multilingual creative venture blending cultural traditions with modern technology and AI tools",
+    "youtube_channel": "AiY Music on YouTube",
+    "subscribers": "5 (early-stage community)",
+    "languages": ["Hindi", "Urdu", "Telugu", "Punjabi", "English"],
+    "genres": ["Rap", "Ghazals", "Indie/Alt Rock", "Fusion", "EDM", "Instrumentals"],
+    
+    "key_works": [
+      {
+        "title": "Life Loop",
+        "type": "Lyrical",
+        "description": "Hindi/English indie fusion exploring monotony of modern life"
+      },
+      {
+        "title": "Tere Liye", 
+        "type": "Lyrical",
+        "description": "Urdu/Hindi poetic ghazal with repeated hook"
+      },
+      {
+        "title": "Rebecca Rap",
+        "type": "Lyrical", 
+        "description": "Humor-driven rap with cultural storytelling"
+      },
+      {
+        "title": "Vegas Love Story",
+        "type": "Lyrical",
+        "description": "Romantic bilingual narrative"
+      },
+      {
+        "title": "Roxanne (Hindi Version)",
+        "type": "Lyrical",
+        "description": "Hindi adaptation of Western track"
+      },
+      {
+        "title": "Punjabi-Telugu Fusion",
+        "type": "Lyrical", 
+        "description": "Experimental cross-cultural piece"
+      },
+      {
+        "title": "EDM & Instrumental Collection",
+        "type": "Instrumental",
+        "description": "100+ EDM & instrumental tracks made freely available online for collaboration"
+      }
+    ],
+
+    "creative_skills": [
+      "Multilingual lyric writing (5 languages)",
+      "AI-assisted songwriting and experimentation", 
+      "Music production using DAWs and beat makers",
+      "Video editing with CapCut",
+      "Community building through free music sharing",
+      "Cultural fusion and cross-cultural music creation"
+    ],
+
+    "community_impact": [
+      "Shared 100+ free instrumental tracks for musician collaboration",
+      "Built platform for jamming, freestyle, and networking",
+      "Promotes cultural bridge-building through music",
+      "Encourages creative exchange in music community"
+    ]
+  },
+
+  "interests": [
+    "Analytics and AI-powered tools",
+    "IT systems and infrastructure",
+    "Mentoring and professional support", 
+    "Creative media (video editing, teaching, design)",
+    "Music production and multilingual songwriting",
+    "Cultural fusion and cross-cultural collaboration",
+    "AI experimentation in creative contexts"
+  ],
+
+  "career_preferences": {
+    "role_types": [
+      "Data Analyst",
+      "Data Scientist", 
+      "Systems Engineer",
+      "Technical Program Manager",
+      "Business Intelligence Analyst"
+    ],
+    "growth_paths": [
+      "Data/analytics roles",
+      "Developer growth opportunities",
+      "AI and machine learning applications",
+      "Technical leadership positions"
+    ]
+  },
+
+  "faqs": [
+    {
+      "question": "What makes Navneet unique?",
+      "answer": "Navneet combines technical expertise in data science and systems administration with creative entrepreneurship through AiY Music. His multilingual music production (5 languages) and AI experimentation show innovation across disciplines, while his experience spans retail, tech, healthcare, and non-profits."
+    },
+    {
+      "question": "How does music relate to his technical work?",
+      "answer": "AiY Music demonstrates Navneet's ability to blend traditional elements with modern technology - the same approach he takes in data science. Music production requires pattern recognition, attention to detail, and creative problem-solving, all skills that enhance his analytical work. He's also experimenting with AI tools in creative contexts."
+    },
+    {
+      "question": "What industries has he worked in?",
+      "answer": "Navneet has diverse industry experience including retail (Walmart), technology (Microsoft, SonicWall, Alarm.com), healthcare (Jazz Pharmaceuticals), energy (Bloom Energy), and non-profit (Asia Society). This cross-industry perspective brings valuable insights to any role."
+    },
+    {
+      "question": "Is he available for new opportunities?",
+      "answer": "Navneet is currently employed at Walmart Global Tech but open to discussing data/analytics roles and developer growth opportunities. He's particularly interested in positions that leverage his combined technical and creative skills."
+    },
+    {
+      "question": "What's his location and remote work preference?",
+      "answer": "He's based in Cupertino/Sunnyvale, CA (Silicon Valley). Remote work preferences aren't specified, so that would be worth discussing directly with him based on the specific opportunity."
+    }
+  ],
+
+  "conversation_starters": [
+    "Navneet combines data science expertise with creative entrepreneurship through AiY Music",
+    "He's experimented with AI tools in both analytical and creative contexts",
+    "His multilingual background (5 languages through music) brings unique cultural perspective", 
+    "He's built systems that track KPIs and automate reporting workflows",
+    "AiY Music has shared 100+ free tracks to support the creative community"
+  ]
+}
+
